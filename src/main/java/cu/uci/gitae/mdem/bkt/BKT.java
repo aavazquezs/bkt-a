@@ -51,9 +51,11 @@ public class BKT {
         this.pT = pT;
         this.items = items;
     }
+
     /**
      * Metodo para establecer el conjunto de respuestas para esa habilidad.
-     * @param items 
+     *
+     * @param items
      */
     public void setItems(List<Item> items) {
         this.items = items;
@@ -83,13 +85,34 @@ public class BKT {
 
     public static class Item {
 
+        private String estudiante;
+        private String problem;
         private boolean correcto;
         private String habilidad;
 
+        public Item() {
+            this.correcto = false;
+            this.habilidad = "";
+            this.estudiante = "";
+            this.problem = "";
+        }
+
+        
+        
         public Item(boolean correcto, String habilidad) {
             this.correcto = correcto;
             this.habilidad = habilidad;
+            this.estudiante = "";
+            this.problem = "";
         }
+
+        public Item(String estudiante, String problem, boolean correcto, String habilidad) {
+            this.estudiante = estudiante;
+            this.problem = problem;
+            this.correcto = correcto;
+            this.habilidad = habilidad;
+        }
+        
 
         public boolean isCorrecto() {
             return correcto;
@@ -106,6 +129,24 @@ public class BKT {
         public void setHabilidad(String habilidad) {
             this.habilidad = habilidad;
         }
+
+        public String getEstudiante() {
+            return estudiante;
+        }
+
+        public void setEstudiante(String estudiante) {
+            this.estudiante = estudiante;
+        }
+
+        public String getProblem() {
+            return problem;
+        }
+
+        public void setProblem(String problem) {
+            this.problem = problem;
+        }
+        
+        
 
     }
 }

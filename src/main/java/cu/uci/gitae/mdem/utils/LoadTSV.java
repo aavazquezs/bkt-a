@@ -2,9 +2,11 @@ package cu.uci.gitae.mdem.utils;
 
 import com.univocity.parsers.tsv.TsvParser;
 import com.univocity.parsers.tsv.TsvParserSettings;
+import cu.uci.gitae.mdem.bkt.BKT;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Clase de utilidad para leer un archivo en formato TSV (texto separado por tabs)
@@ -56,5 +58,17 @@ public class LoadTSV {
         TsvParser parser = new TsvParser(settings);
         List<String[]> allRows = parser.parseAll(new FileInputStream(pathToFile));
         return allRows;
+    }
+    
+    public static List<BKT.Item> loadItemFromTSV(String pathToFile) throws FileNotFoundException{
+        List<String[]> filasSinProcesar = loadTSV(pathToFile);
+        List<BKT.Item> items = filasSinProcesar
+                .stream()
+                .map((String[] fila)->{
+                    BKT.Item item = new BKT.Item(fila[1], fila[2], fila[0].equalsIgnoreCase("1"), fila[3]);
+                    return item;
+                })
+                .collect(Collectors.toList());
+        return items;
     }
 }
