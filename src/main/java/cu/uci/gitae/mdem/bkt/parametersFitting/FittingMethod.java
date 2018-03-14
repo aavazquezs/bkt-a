@@ -2,6 +2,7 @@ package cu.uci.gitae.mdem.bkt.parametersFitting;
 
 import cu.uci.gitae.mdem.bkt.BKT;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface que establece el contrato para los métodos de ajuste de parámetros
@@ -15,5 +16,5 @@ public interface FittingMethod {
      * @param items Conjunto de item actuales
      * @return arreglo con los parámetros ajustados.
      */
-    public Double[] fitParameter(List<BKT.Item> items);
+    public Map<String, Parametros> fitParameters(List<BKT.Item> items);
 }
