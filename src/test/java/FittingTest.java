@@ -71,14 +71,15 @@ public class FittingTest {
                     return item;
                 })
                 .collect(Collectors.toList());
-        BruteForceFitting bff = new BruteForceFitting(true, true, false);
+        BruteForceFitting bff = new BruteForceFitting(false, true, false);
         Map<String, Parametros> resultado = bff.fitParameters(items);
         resultado.forEach((llave, valor) -> {
             System.out.print(llave + ": ");
             System.out.print(valor.getL0() + " ");
-            System.out.print(valor.getT() + " ");
             System.out.print(valor.getG() + " ");
-            System.out.println(valor.getS() + " ");
+            System.out.print(valor.getS() + " ");
+            System.out.println(valor.getT() + " ");
+            
         });
     }
     

@@ -17,12 +17,12 @@ import static org.junit.Assert.*;
  *
  * @author angel
  */
-public class StandardBKT {
+public class StandardBKTTest {
 
     String pathToDataset = "./data/dataset.tsv";
     List<String[]> dataset;
 
-    public StandardBKT() {
+    public StandardBKTTest() {
     }
 
     @BeforeClass
