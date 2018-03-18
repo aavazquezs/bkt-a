@@ -88,10 +88,6 @@ public class BruteForceFitting extends FittingMethodImpl {
     private Parametros ajustarModeloHabilidad(String habilidad) {
         double SSR = 0.0; //suma de cuadrados residuales
         double bestSSR = 9999999.0;
-        this.pL0 = 0.01;
-        this.pT = 0.01;
-        this.pG = 0.01;
-        this.pS = 0.01;
         double bestL0 = 0.01;
         double bestT = 0.01;
         double bestG = 0.01;
@@ -126,10 +122,6 @@ public class BruteForceFitting extends FittingMethodImpl {
                             bestT = T;
                             bestS = S;
                             bestG = G;
-//                            this.pL0 = L0;
-//                            this.pT = T;
-//                            this.pS = S;
-//                            this.pG = G;
                         }
                     }
                 }
@@ -137,10 +129,10 @@ public class BruteForceFitting extends FittingMethodImpl {
         }
         
         //para buscar mas precision
-        double startL0 = this.pL0;
-        double startT = this.pT;
-        double startG = this.pG;
-        double startS = this.pS;
+        double startL0 = bestL0;
+        double startT = bestT;
+        double startG = bestG;
+        double startS = bestS;
         for (double l0 = startL0 - 0.009; l0 <= startL0 + 0.009 && l0 <= topL0; l0 += 0.001) {
             for (double t = startT - 0.009; t <= startT + 0.009 && t <= topT; t += 0.001) {
                 for (double g = startG - 0.009; g <= startG + 0.009 && g <= topG; g += 0.001) {
@@ -152,20 +144,24 @@ public class BruteForceFitting extends FittingMethodImpl {
                             bestT = t;
                             bestS = s;
                             bestG = g;
-//                            this.pL0 = l0;
-//                            this.pT = t;
-//                            this.pG = g;
-//                            this.pS = s;
                         }
                     }
                 }
             }
         }
-        
-        Parametros parametros = new Parametros(bestL0,bestT, bestG, bestS);
+        Parametros parametros = new Parametros(bestL0, bestT, bestG, bestS);
         return parametros;
     }
 
+    /**
+     * Calcula la suma cuadrada del los residuales entre el likelihood y el valor de L
+     * @param l0
+     * @param t
+     * @param g
+     * @param s
+     * @param itemsActuales
+     * @return 
+     */
     private double findSSR(double l0, double t, double g, double s, List<BKT.Item> itemsActuales) {
         double SSR = 0.0;
         String estudianteAnterior = items.get(0).getEstudiante();
@@ -214,6 +210,10 @@ public class BruteForceFitting extends FittingMethodImpl {
         });
     }
 
+    /**
+     * Obtener las habilidades del dataset
+     * @return 
+     */
     private List<String> getHabilidades() {
         List<String> habilidades = items
                 .stream()
@@ -225,6 +225,11 @@ public class BruteForceFitting extends FittingMethodImpl {
         return habilidades;
     }
 
+    /**
+     * Obtener una lista de los estudiantes en los items actuales.
+     * @param itemsActuales
+     * @return 
+     */
     private List<String> getEstudiantes(List<BKT.Item> itemsActuales) {
         return itemsActuales.stream()
                 .map(i -> {
