@@ -1,5 +1,7 @@
 package cu.uci.gitae.mdem.bkt.parametersFitting;
 
+import java.util.Random;
+
 /**
  *
  * @author angel
@@ -20,6 +22,17 @@ public class Parametros {
         this.s = s;
     }
 
+    /**
+     * Inicializa de forma aleatoria el conjunto de parámetros.
+     */
+    public void randomInit(){
+        Random rand = new Random();
+        this.l0 = rand.nextDouble();
+        this.t = rand.nextDouble();
+        this.s = rand.nextDouble();
+        this.g = rand.nextDouble();
+    }
+    
     public double getL0() {
         return l0;
     }
