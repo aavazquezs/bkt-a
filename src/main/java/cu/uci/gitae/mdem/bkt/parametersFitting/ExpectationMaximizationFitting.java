@@ -49,8 +49,8 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
             /* 1. Iniciar los parámetros desconocidos (probabilidades condicionales) 
             con valores aleatorios (o estimaciones de expertos)*/
             Parametros param = new Parametros(); //hipotesis actual
-            param.randomInit();
-            double likelihood = 0.0;
+            param.randomInit(); //inicializados con valores aleatorios
+            double log_likelihood = 0.0;
             double menorErrorCuadrado = Double.MAX_VALUE; //parametro de control
             while (menorErrorCuadrado >= epsilon) {
                 //Paso E: se estiman los datos faltantes en base a los parámetros actuales.
@@ -72,7 +72,7 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
                     prevPL = newPL;
                     double correcto = (item.isCorrecto())?1.0:0.0;
                     //calcula el error cuadrático
-                    likelihood += (correcto - newPC)*(correcto - newPC);
+                    log_likelihood += Math.log((correcto - newPC)*(correcto - newPC));
                 }
                 //Paso M: se estiman las probabilidades (parámetros) considerando los datos estimados.
                 /*3. Utilizar los valores estimados para completar la tabla de datos.*/
