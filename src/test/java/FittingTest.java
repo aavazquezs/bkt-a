@@ -104,9 +104,7 @@ public class FittingTest {
         });
         
     }
-    
-    
-    
+
     //@Test
     public void bruteForceFitting() throws FileNotFoundException {
         List<String[]> filas = LoadTSV.loadTSV(pathToFile);
