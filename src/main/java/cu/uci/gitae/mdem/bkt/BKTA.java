@@ -3,11 +3,9 @@ package cu.uci.gitae.mdem.bkt;
 import cu.uci.gitae.mdem.bkt.dataload.DataLoad;
 import cu.uci.gitae.mdem.bkt.dataload.DataLoadImpl;
 import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
-import java.util.HashMap;
 import java.util.Map;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
 
 /**
  * Clase que implementa el algoritmo BKT adaptado a datos masivos.
@@ -65,6 +63,5 @@ public class BKTA {
     public Dataset<Row> getDataset() {
         return dataset;
     }
-    
     
 }
