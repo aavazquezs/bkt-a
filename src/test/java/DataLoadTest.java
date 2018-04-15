@@ -6,6 +6,11 @@
 
 import cu.uci.gitae.mdem.bkt.dataload.DataLoad;
 import cu.uci.gitae.mdem.bkt.dataload.DataLoadImpl;
+import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,7 +49,12 @@ public class DataLoadTest {
     @Test
     public void dataLoad() {
         String pathToDataset = "./data/dataset.tsv";
-        String masterConfig = "";
+        String masterConfig = "local[2]";
         DataLoad dataLoad = new DataLoadImpl(masterConfig);
+        Map<String, String> param = new HashMap<>();
+        param.put("datasetPath", pathToDataset);
+        Dataset<Row> dataset = dataLoad.loadData(DataSourceType.TSV, param);
+        assertNotNull(dataset);
+        System.out.println(dataset.count());
     }
 }
