@@ -14,34 +14,31 @@ import org.apache.spark.sql.SparkSession;
  * @author angel
  */
 public class BKTA {
+    String masterConfig;
+    String datasetPath;
     Dataset<Row> dataset;
+    DataLoad dataLoad;
     //SparkSession spark;
 
     public BKTA(String masterConfig, String datasetPath) {
-        
-        DataLoad dataLoad = new DataLoadImpl(masterConfig);
-        /*
-        spark = SparkSession    //crea la sesion de spark, se debe especificar el tipo de master
-                .builder()
-                .appName("BKT-A")
-                .config("master", masterConfig)
-                .getOrCreate();
-        dataset = spark.read()  //lee el dataset desde un csv delimitado por tabs
-                .format("com.databricks.spark.csv")
-                .option("delimiter", "\t")
-                .option("header", "true")
-                .load(datasetPath);
-        */
-        Map<String, String> param = new HashMap<>();
-        param.put("datasetPath", datasetPath);
-        dataset = dataLoad.loadData(DataSourceType.TSV, param);
+        this.masterConfig = masterConfig;
+        this.datasetPath = datasetPath;
+        this.dataset = null;
+        this.dataLoad = new DataLoadImpl("BKT-A", masterConfig);
     }
     
     public void showDatasetSchema(){
         dataset.printSchema();
     }
-
-    public Dataset<Row> getDataset() {
+    
+    /**
+     * Cargar el dataset a partir de una fuente de datos determinada.
+     * @param type Tipo de fuente de dato DataSourceType
+     * @param param Parametros necesarios para el tipo de datos elegido
+     * @return Conjunto de datos obtenido a partir de la fuente de datos
+     */
+    public Dataset<Row> getDataset(DataSourceType type, Map<String, String> param) {
+        dataset = dataLoad.loadData(DataSourceType.TSV, param);
         return dataset;
     }
     
@@ -59,6 +56,14 @@ public class BKTA {
     
     public Dataset<Row> getResults(){
         return null;
+    }
+
+    /**
+     * Obtener el dataset actual
+     * @return 
+     */
+    public Dataset<Row> getDataset() {
+        return dataset;
     }
     
     

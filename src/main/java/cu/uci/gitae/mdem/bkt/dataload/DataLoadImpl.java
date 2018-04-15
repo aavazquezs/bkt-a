@@ -1,6 +1,8 @@
 package cu.uci.gitae.mdem.bkt.dataload;
 
 import java.util.Map;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -11,42 +13,16 @@ import org.apache.spark.sql.SparkSession;
  */
 public class DataLoadImpl implements DataLoad {
 
+    JavaSparkContext jsc;
     SparkSession sparkSession;
     Dataset<Row> dataset;
 
-    public DataLoadImpl(SparkSession sparkSession, Dataset<Row> dataset) {
-        this.sparkSession = sparkSession;
-        this.dataset = dataset;
-    }
-
-    public DataLoadImpl(SparkSession sparkSession) {
-        this.sparkSession = sparkSession;
-        this.dataset = null;
-    }
-
-    public DataLoadImpl(String masterConfig) {
-        sparkSession = SparkSession //crea la sesion de spark, se debe especificar el tipo de master
-                .builder()
-                .appName("BKT-A")
-                .config("master", masterConfig)
+    public DataLoadImpl(String appName, String master) {
+        SparkConf conf = new SparkConf().setAppName(appName).setMaster(master);
+        this.sparkSession = SparkSession.builder()
+                .config(conf)
                 .getOrCreate();
-    }
-
-    //getters and setters
-    public SparkSession getSparkSession() {
-        return sparkSession;
-    }
-
-    public void setSparkSession(SparkSession sparkSession) {
-        this.sparkSession = sparkSession;
-    }
-
-    public Dataset<Row> getDataset() {
-        return dataset;
-    }
-
-    public void setDataset(Dataset<Row> dataset) {
-        this.dataset = dataset;
+        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
     }
 
     @Override
