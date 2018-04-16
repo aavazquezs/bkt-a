@@ -40,7 +40,11 @@ public class BKTA {
         return dataset;
     }
     
-    public Dataset<Row> preProcessDataset(){
+    public Dataset<Row> preProcessDataset(Dataset<Row> dataset){
+        if(dataset!=null){
+            this.dataset = dataset;
+        }
+        
         return null;
     }
     
