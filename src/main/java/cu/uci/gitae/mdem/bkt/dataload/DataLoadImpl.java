@@ -25,6 +25,12 @@ public class DataLoadImpl implements DataLoad {
         this.jsc = new JavaSparkContext(sparkSession.sparkContext());
     }
 
+    public DataLoadImpl(SparkSession sparkSession) {
+        this.sparkSession = sparkSession;
+        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
+    }
+    
+
     @Override
     public Dataset<Row> loadData(DataSourceType type, Map<String, String> parametros) {
         String datasetPath;

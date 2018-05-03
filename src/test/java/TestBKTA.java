@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 import cu.uci.gitae.mdem.bkt.BKTA;
 import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
 import java.util.HashMap;
@@ -49,11 +43,28 @@ public class TestBKTA {
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
-     public void dataload() {
+     public void prueba() {
+         //carga de datos
          Map<String, String> param = new HashMap<>();
          param.put("datasetPath", "./data/dataset.tsv");
+         param.put("emptySymbol", "?");
          Dataset<Row> dataset = bkta.getDataset(DataSourceType.TSV, param);
          assertNotNull(dataset);
-         bkta.showDatasetSchema();
+         //bkta.showDatasetSchema();
+         System.out.println("TEST: Field names: ");
+         String[] fieldNames = dataset.schema().fieldNames();
+         for (String fieldName : fieldNames) {
+             System.out.println(fieldName);
+         }
+         System.out.println("TEST: Esquema: ");
+         dataset.printSchema();
+         //preprocesamiento
+         //dataset = dataset.select("First Attempt","Anon Student Id","Problem","KC (Original)");
+         long cant = dataset.count();
+         System.out.println("TEST: Cantidad de tuplas sin pre-procesar: "+cant);
+         dataset = bkta.preProcessDataset(param);
+         long cant2 = dataset.count();
+         System.out.println("TEST: Cantidad de tuplas despues de pre-procesar: "+cant2);
+         assertEquals(cant-3, cant2);
      }
 }

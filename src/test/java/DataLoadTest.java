@@ -5,9 +5,10 @@ import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.SparkContext;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,11 +23,11 @@ import static org.junit.Assert.*;
 public class DataLoadTest {
 
     SparkConf conf;
-    JavaSparkContext sc;
+    SparkSession sparkSession;
 
     public DataLoadTest() {
         conf = new SparkConf().setAppName("DataLoadTest").setMaster("local[2]");
-        sc = new JavaSparkContext(conf);
+        sparkSession = SparkSession.builder().config(conf).getOrCreate();
     }
 
     @BeforeClass
@@ -52,7 +53,7 @@ public class DataLoadTest {
     public void dataLoad() {
         String pathToDataset = "./data/dataset.tsv";
         String masterConfig = "local";
-        DataLoad dataLoad = new DataLoadImpl("testDataLoad", masterConfig);
+        DataLoad dataLoad = new DataLoadImpl(sparkSession);
         Map<String, String> param = new HashMap<>();
         param.put("datasetPath", pathToDataset);
         Dataset<Row> dataset = dataLoad.loadData(DataSourceType.TSV, param);
