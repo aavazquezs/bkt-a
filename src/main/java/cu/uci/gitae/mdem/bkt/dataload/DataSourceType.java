@@ -7,6 +7,7 @@ package cu.uci.gitae.mdem.bkt.dataload;
 public enum DataSourceType {
     CSV,
     TSV,
+    JSON,
     Hive,
     Casandra
 }

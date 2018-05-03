@@ -1,3 +1,4 @@
+
 import cu.uci.gitae.mdem.bkt.BKTA;
 import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
 import java.util.HashMap;
@@ -16,25 +17,25 @@ import static org.junit.Assert.*;
  * @author angel
  */
 public class TestBKTA {
-    
+
     private BKTA bkta;
-    
+
     public TestBKTA() {
         bkta = new BKTA("local[2]", "./data/dataset.tsv");
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }

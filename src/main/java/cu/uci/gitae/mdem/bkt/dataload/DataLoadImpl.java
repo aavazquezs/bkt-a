@@ -37,7 +37,7 @@ public class DataLoadImpl implements DataLoad {
         switch (type) {
             case CSV:
                 datasetPath = parametros.get("datasetPath");
-                dataset = sparkSession.read() //lee el dataset desde un csv delimitado por tabs
+                dataset = sparkSession.read()
                         .format("com.databricks.spark.csv")
                         .option("header", "true")
                         .load(datasetPath);
@@ -50,6 +50,7 @@ public class DataLoadImpl implements DataLoad {
                         .option("header", "true")
                         .load(datasetPath);
                 break;
+            case JSON:
             case Hive:
             case Casandra:
                 this.dataset = null; //TODO 
