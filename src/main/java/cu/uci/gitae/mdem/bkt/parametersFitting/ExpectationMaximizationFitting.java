@@ -1,10 +1,12 @@
 package cu.uci.gitae.mdem.bkt.parametersFitting;
 
 import cu.uci.gitae.mdem.bkt.BKT;
+import cu.uci.gitae.mdem.bkt.Item;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.spark.sql.Dataset;
 
 /**
  *
@@ -23,7 +25,7 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
      * @return
      */
     @Override
-    public Map<String, Parametros> fitParameters(List<BKT.Item> items) {
+    public Map<String, Parametros> fitParameters(List<Item> items) {
 
         final Double epsilon = 0.001; //parametro para controlar la convergencia
         Map<String, Parametros> resultado = new HashMap<>();
@@ -37,7 +39,7 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
                 .collect(Collectors.toList());
 
         for (String habilidad : habilidades) { //Calcular parámetros para cada habilidad 
-            List<BKT.Item> itemsHabilidad = items //Obtener los items para esa habilidad.
+            List<Item> itemsHabilidad = items //Obtener los items para esa habilidad.
                     .stream().parallel()
                     .filter(item -> {
                         return item.getHabilidad().equalsIgnoreCase(habilidad);
@@ -59,7 +61,7 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
                 double prevPL = param.getL0();
                 double newPL; //probabilidad de dominar la habilidad
                 double newPC; //probabilidad de responder correctamente
-                for (BKT.Item item : itemsHabilidad) {
+                for (Item item : itemsHabilidad) {
                     newPL = prevPL + param.getT() * (1.0 - prevPL); //calcula la probabilidad de dominar la habilidad 
                     newPC = param.getG() * (1.0 - prevPL) + (1.0 - param.getS()) * prevPL; //calcula la probabilidad de responder correctamente
                     if(item.isCorrecto()){
@@ -91,4 +93,8 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
         return newPL;
     }
 
+    @Override
+    public Map<String, Parametros> fitParameters(Dataset<Item> dataset){
+        return null;
+    }
 }

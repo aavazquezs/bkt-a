@@ -1,5 +1,6 @@
 
 import cu.uci.gitae.mdem.bkt.BKT;
+import cu.uci.gitae.mdem.bkt.Item;
 import cu.uci.gitae.mdem.utils.LoadTSV;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -77,18 +78,18 @@ public class StandardBKTTest {
         String estudianteId = "Stu_02ee1b3f31a6f6a7f4b8012298b2395e";
         String habilidad = "ALT:PARALLELOGRAM-AREA";
 
-        List<BKT.Item> items = dataset.stream()
+        List<Item> items = dataset.stream()
                 .filter(row -> { //filtra las entradas para obtener las del estudianteId y la habilidad concreta
                     return row[1].equals(estudianteId) && row[3].equals(habilidad);
                 })
                 .map((String[] t) -> { //convierte cada entrada de un arreglo de String a un Item
-                    BKT.Item item = new BKT.Item(t[0].equalsIgnoreCase("1"), habilidad);
+                    Item item = new Item(t[0].equalsIgnoreCase("1"), habilidad);
                     return item;
                 })
                 .collect(Collectors.toList());
         assertEquals(16, items.size()); //comprueba que se obtuvieron los 16 elementos
         items.forEach(item -> {
-            assertTrue(item instanceof BKT.Item); //comprueba que cada elemento sea del tipo Item
+            assertTrue(item instanceof Item); //comprueba que cada elemento sea del tipo Item
         });
     }
 
@@ -120,7 +121,7 @@ public class StandardBKTTest {
                 })
                 .distinct()
                 .collect(Collectors.toList());
-        assertEquals(60, estudiantes.size());//comprueba que haya 60 estudiantes distintos en el dataset
+        assertEquals(60+1, estudiantes.size());//comprueba que haya 60+1(dato perdido) estudiantes distintos en el dataset
         //estudiantes.forEach(System.out::println);
     }
     @Test
@@ -129,12 +130,12 @@ public class StandardBKTTest {
         String estudianteId = "Stu_02ee1b3f31a6f6a7f4b8012298b2395e";
         String habilidad = "ALT:PARALLELOGRAM-AREA";
 
-        List<BKT.Item> items = dataset.stream()
+        List<Item> items = dataset.stream()
                 .filter(row -> { //filtra las entradas para obtener las del estudianteId y la habilidad concreta
                     return row[1].equals(estudianteId) && row[3].equals(habilidad);
                 })
                 .map((String[] t) -> { //convierte cada entrada de un arreglo de String a un Item
-                    BKT.Item item = new BKT.Item(t[0].equalsIgnoreCase("1"), habilidad);
+                    Item item = new Item(t[0].equalsIgnoreCase("1"), habilidad);
                     return item;
                 })
                 .collect(Collectors.toList());

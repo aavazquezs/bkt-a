@@ -82,7 +82,7 @@ public class BKT {
         }
         return pL[items.size()];
     }
-
+    /*
     public static class Item {
 
         private String estudiante;
@@ -145,8 +145,5 @@ public class BKT {
         public void setProblem(String problem) {
             this.problem = problem;
         }
-        
-        
-
-    }
+    }*/
 }

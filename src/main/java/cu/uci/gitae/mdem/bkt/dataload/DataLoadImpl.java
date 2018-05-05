@@ -1,9 +1,12 @@
 package cu.uci.gitae.mdem.bkt.dataload;
 
+import cu.uci.gitae.mdem.bkt.Item;
 import java.util.Map;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 

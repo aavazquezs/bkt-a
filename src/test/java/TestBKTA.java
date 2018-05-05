@@ -1,5 +1,6 @@
 
 import cu.uci.gitae.mdem.bkt.BKTA;
+import cu.uci.gitae.mdem.bkt.Item;
 import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,9 +64,15 @@ public class TestBKTA {
          //dataset = dataset.select("First Attempt","Anon Student Id","Problem","KC (Original)");
          long cant = dataset.count();
          System.out.println("TEST: Cantidad de tuplas sin pre-procesar: "+cant);
-         dataset = bkta.preProcessDataset(param);
-         long cant2 = dataset.count();
+         Dataset<Item> items = bkta.preProcessDataset(param);
+         items.printSchema();
+         long cant2 = items.count();
          System.out.println("TEST: Cantidad de tuplas despues de pre-procesar: "+cant2);
          assertEquals(cant-3, cant2);
+         dataset.show(20);
+     }
+
+     @Test public void fittingEM(){
+         
      }
 }

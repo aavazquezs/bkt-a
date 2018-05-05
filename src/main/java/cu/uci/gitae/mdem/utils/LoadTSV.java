@@ -3,6 +3,7 @@ package cu.uci.gitae.mdem.utils;
 import com.univocity.parsers.tsv.TsvParser;
 import com.univocity.parsers.tsv.TsvParserSettings;
 import cu.uci.gitae.mdem.bkt.BKT;
+import cu.uci.gitae.mdem.bkt.Item;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -60,12 +61,12 @@ public class LoadTSV {
         return allRows;
     }
     
-    public static List<BKT.Item> loadItemFromTSV(String pathToFile) throws FileNotFoundException{
+    public static List<Item> loadItemFromTSV(String pathToFile) throws FileNotFoundException{
         List<String[]> filasSinProcesar = loadTSV(pathToFile);
-        List<BKT.Item> items = filasSinProcesar
+        List<Item> items = filasSinProcesar
                 .stream()
                 .map((String[] fila)->{
-                    BKT.Item item = new BKT.Item(fila[1], fila[2], fila[0].equalsIgnoreCase("1"), fila[3]);
+                    Item item = new Item(fila[1], fila[2], fila[0].equalsIgnoreCase("1"), fila[3]);
                     return item;
                 })
                 .collect(Collectors.toList());

@@ -1,12 +1,14 @@
 package cu.uci.gitae.mdem.bkt.parametersFitting;
 
 import cu.uci.gitae.mdem.bkt.BKT;
+import cu.uci.gitae.mdem.bkt.Item;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.spark.sql.Dataset;
 
 /**
  * Método para el ajuste de parámetros usando fuerza bruta. Basado en el método
@@ -19,7 +21,7 @@ public class BruteForceFitting extends FittingMethodImpl {
     private boolean acotadoL0yT;
     private boolean acotadoGyS;
     private boolean estimacionLnMenos1;
-    private List<BKT.Item> items;
+    private List<Item> items;
 
     public BruteForceFitting() {
         super();
@@ -67,7 +69,7 @@ public class BruteForceFitting extends FittingMethodImpl {
      * cada habilidad.
      */
     @Override
-    public Map<String, Parametros> fitParameters(List<BKT.Item> items) {
+    public Map<String, Parametros> fitParameters(List<Item> items) {
         this.items = items;
         this.sortItems(items);
         Map<String, Parametros> resultado = new HashMap<>();
@@ -104,7 +106,7 @@ public class BruteForceFitting extends FittingMethodImpl {
             topG = 0.3;
             topS = 0.1;
         }
-        List<BKT.Item> itemsActuales = items
+        List<Item> itemsActuales = items
                 .stream()
                 .filter(t -> {
                     return t.getHabilidad().equals(habilidad);
@@ -162,7 +164,7 @@ public class BruteForceFitting extends FittingMethodImpl {
      * @param itemsActuales
      * @return 
      */
-    private double findSSR(double l0, double t, double g, double s, List<BKT.Item> itemsActuales) {
+    private double findSSR(double l0, double t, double g, double s, List<Item> itemsActuales) {
         double SSR = 0.0;
         String estudianteAnterior = items.get(0).getEstudiante();
         double prevL = 0.0;
@@ -170,7 +172,7 @@ public class BruteForceFitting extends FittingMethodImpl {
         double prevLGivenResult = 0.0;
         double newL = 0.0;
 
-        for (BKT.Item item : items) {
+        for (Item item : items) {
             if (!item.getEstudiante().equalsIgnoreCase(estudianteAnterior)) {
                 prevL = l0;
                 estudianteAnterior = item.getEstudiante();
@@ -200,8 +202,8 @@ public class BruteForceFitting extends FittingMethodImpl {
      *
      * @param items
      */
-    private void sortItems(List<BKT.Item> items) {
-        Collections.sort(items, (BKT.Item i1, BKT.Item i2) -> {
+    private void sortItems(List<Item> items) {
+        Collections.sort(items, (Item i1, Item i2) -> {
             int valor = i1.getHabilidad().compareTo(i2.getHabilidad());
             if (valor == 0) {
                 return i1.getEstudiante().compareTo(i2.getEstudiante());
@@ -230,12 +232,17 @@ public class BruteForceFitting extends FittingMethodImpl {
      * @param itemsActuales
      * @return 
      */
-    private List<String> getEstudiantes(List<BKT.Item> itemsActuales) {
+    private List<String> getEstudiantes(List<Item> itemsActuales) {
         return itemsActuales.stream()
                 .map(i -> {
                     return i.getEstudiante();
                 })
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, Parametros> fitParameters(Dataset<Item> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

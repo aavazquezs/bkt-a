@@ -1,5 +1,6 @@
 
 import cu.uci.gitae.mdem.bkt.BKT;
+import cu.uci.gitae.mdem.bkt.Item;
 import cu.uci.gitae.mdem.bkt.parametersFitting.BruteForceFitting;
 import cu.uci.gitae.mdem.bkt.parametersFitting.Parametros;
 import cu.uci.gitae.mdem.utils.LoadTSV;
@@ -48,10 +49,10 @@ public class FittingTest {
     //@Test 
     public void cargarDataset() throws FileNotFoundException{
         List<String[]> filas = LoadTSV.loadTSV(pathToFile);
-        List<BKT.Item> items = filas
+        List<Item> items = filas
                 .stream()
                 .map((String[] fila) -> {
-                    BKT.Item item = new BKT.Item(fila[2], fila[1], fila[5].equals("1"), fila[3]);
+                    Item item = new Item(fila[2], fila[1], fila[5].equals("1"), fila[3]);
                     return item;
                 })
                 .collect(Collectors.toList());
@@ -65,10 +66,10 @@ public class FittingTest {
     
     @Test public void secuenciaPorHabilidad() throws FileNotFoundException{
         List<String[]> filas = LoadTSV.loadTSV(pathToFile);
-        List<BKT.Item> items = filas
+        List<Item> items = filas
                 .stream()
                 .map((String[] fila) -> {
-                    BKT.Item item = new BKT.Item(fila[2], fila[1], fila[5].equals("1"), fila[3]);
+                    Item item = new Item(fila[2], fila[1], fila[5].equals("1"), fila[3]);
                     return item;
                 })
                 .collect(Collectors.toList());
@@ -108,10 +109,10 @@ public class FittingTest {
     //@Test
     public void bruteForceFitting() throws FileNotFoundException {
         List<String[]> filas = LoadTSV.loadTSV(pathToFile);
-        List<BKT.Item> items = filas
+        List<Item> items = filas
                 .stream()
                 .map((String[] fila) -> {
-                    BKT.Item item = new BKT.Item(fila[2], fila[1], fila[5].equals("1"), fila[3]);
+                    Item item = new Item(fila[2], fila[1], fila[5].equals("1"), fila[3]);
                     return item;
                 })
                 .collect(Collectors.toList());
