@@ -4,7 +4,9 @@ import org.apache.commons.math3.exception.OutOfRangeException;
 
 /**
  * Clase que implementa una clase generica para modelos ocultos de Markov El
- * modelo está definido como M = (A, B, pi)
+ * modelo está definido como M = (A, B, pi), donde A es matrix de probabilidades 
+ * de emision, B matrix de probabilidad de emision y pi vector de probabilidades
+ * iniciales.
  *
  * @author angel
  */

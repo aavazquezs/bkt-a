@@ -24,6 +24,7 @@ public class BKTA {
     //String masterConfig;
     //String datasetPath;
     Dataset<Row> dataset;
+    Dataset<Item> items;
     DataLoad dataLoad;
     SparkSession spark;
 
@@ -109,7 +110,7 @@ public class BKTA {
                     i.setHabilidad(row.getString(3));
                     return i;
                 }, itemEncoder);
-
+        this.items = items;
         return items;
     }
 
@@ -122,25 +123,38 @@ public class BKTA {
      * utilizará Expectation Maximization.
      * @return
      */
-    public Dataset<Row> fitParameters(Map<String, String> param) {
+    public Map<String, Map<String, Parametros>> fitParameters(Map<String, String> param) {
+        Map<String, Map<String, Parametros>> parametrosPorEstudiante;
         String method = param.get("fittingMethod");
+        switch(method){
+            case "maximizationFitting":
+                parametrosPorEstudiante = this.expectationMaximizationFitting(items);
+                break;
+            case "bruteForce":
+                parametrosPorEstudiante = this.bruteForceFitting(items);
+                break;
+            case "heuristic":
+                parametrosPorEstudiante = this.heuristicFitting(items);
+                break;
+            default:
+                throw new IllegalArgumentException("El método de ajuste "+method+ "no está disponible");
+        }
+        return parametrosPorEstudiante;
+    }
 
+    public Dataset<Item> executeInParallel() {
         return null;
     }
 
-    public Dataset<Row> executeInParallel() {
+    private Map<String, Map<String, Parametros>> expectationMaximizationFitting(Dataset<Item> dataset) {
         return null;
     }
 
-    private Parametros expectationMaximizationFitting(Dataset<Row> dataset) {
+    private Map<String, Map<String, Parametros>> bruteForceFitting(Dataset<Item> dataset) {
         return null;
     }
 
-    private Parametros bruteForceFitting(Dataset<Row> dataset) {
-        return null;
-    }
-
-    private Parametros heuristicFitting(Dataset<Row> dataset) {
+    private Map<String, Map<String, Parametros>> heuristicFitting(Dataset<Item> dataset) {
         return null;
     }
 

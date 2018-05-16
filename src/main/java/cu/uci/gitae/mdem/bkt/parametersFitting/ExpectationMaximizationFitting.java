@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.math3.util.Pair;
 import org.apache.spark.sql.Dataset;
 
 /**
@@ -26,7 +27,6 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
      */
     @Override
     public Map<String, Parametros> fitParameters(List<Item> items) {
-
         final Double epsilon = 0.001; //parametro para controlar la convergencia
         Map<String, Parametros> resultado = new HashMap<>();
         List<String> habilidades = items //obtener el conjunto de habilidades
@@ -53,32 +53,15 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
             Parametros param = new Parametros(); //hipotesis actual
             param.randomInit(); //inicializados con valores aleatorios
             double log_likelihood = 0.0;
+
             double menorErrorCuadrado = Double.MAX_VALUE; //parametro de control
             while (menorErrorCuadrado >= epsilon) {
                 //Paso E: se estiman los datos faltantes en base a los parámetros actuales.
                 /*2. Utilizar los datos conocidos con los parámetros actuales para 
                 estimar los valores de la variable(s) oculta(s).*/
-                double prevPL = param.getL0();
-                double newPL; //probabilidad de dominar la habilidad
-                double newPC; //probabilidad de responder correctamente
-                for (Item item : itemsHabilidad) {
-                    newPL = prevPL + param.getT() * (1.0 - prevPL); //calcula la probabilidad de dominar la habilidad 
-                    newPC = param.getG() * (1.0 - prevPL) + (1.0 - param.getS()) * prevPL; //calcula la probabilidad de responder correctamente
-                    if(item.isCorrecto()){
-                        //calcular prevL cuando el item obtuvo respuesta correcta.
-                        newPL = (prevPL*(1.0 - param.getS()))/(prevPL*(1.0-param.getS())+(1.0-prevPL)*param.getG());
-                    }else{
-                        //calcular prevL cuando el item obtuvo respuesta incorrecta
-                        newPL = (prevPL*param.getS())/(prevPL*param.getS()+(1.0-prevPL)*(1.0 - param.getG()));
-                    }
-                    prevPL = newPL;
-                    double correcto = (item.isCorrecto())?1.0:0.0;
-                    //calcula el error cuadrático
-                    log_likelihood += Math.log((correcto - newPC)*(correcto - newPC));
-                }
+                
                 //Paso M: se estiman las probabilidades (parámetros) considerando los datos estimados.
                 /*3. Utilizar los valores estimados para completar la tabla de datos.*/
-                
                 /*4. Re-estimar los parámetros con los nuevos datos*/
             }
         }
@@ -88,13 +71,48 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
         return null;
     }
 
+    /**
+     * Calcula el likelihood de 
+     * @param paramIniciales
+     * @param items
+     * @return 
+     */
+    private double EStep(Parametros paramIniciales, List<Item> items) {
+        double log_likelihood = 0.0;
+        Parametros param = paramIniciales;
+        double prevPL = param.getL0();
+        double newPL; //probabilidad de dominar la habilidad
+        double newPC; //probabilidad de responder correctamente
+        for (Item item : items) {
+            newPL = prevPL + param.getT() * (1.0 - prevPL); //calcula la probabilidad de dominar la habilidad 
+            newPC = param.getG() * (1.0 - prevPL) + (1.0 - param.getS()) * prevPL; //calcula la probabilidad de responder correctamente
+            if (item.isCorrecto()) {
+                //calcular prevL cuando el item obtuvo respuesta correcta.
+                newPL = (prevPL * (1.0 - param.getS())) / (prevPL * (1.0 - param.getS()) + (1.0 - prevPL) * param.getG());
+            } else {
+                //calcular prevL cuando el item obtuvo respuesta incorrecta
+                newPL = (prevPL * param.getS()) / (prevPL * param.getS() + (1.0 - prevPL) * (1.0 - param.getG()));
+            }
+            prevPL = newPL;
+            double correcto = (item.isCorrecto()) ? 1.0 : 0.0;
+            //calcula el error cuadrático - TODO valorar quitar el error cuadrático
+            log_likelihood += Math.log((correcto - newPC) * (correcto - newPC));
+        }
+        return log_likelihood;
+    }
+
     private double newPL(Parametros param, double prevPL) {
         double newPL = prevPL + param.getT() * (1.0 - prevPL);
         return newPL;
     }
 
     @Override
-    public Map<String, Parametros> fitParameters(Dataset<Item> dataset){
+    public Map<String, Parametros> fitParameters(Dataset<Item> dataset) {
         return null;
+    }
+
+    private double sumLogLikelihood(Parametros param, List<Item> items) {
+
+        return 0.0;
     }
 }
