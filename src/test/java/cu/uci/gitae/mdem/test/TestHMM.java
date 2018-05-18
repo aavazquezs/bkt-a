@@ -5,7 +5,6 @@
  */
 package cu.uci.gitae.mdem.test;
 
-import cu.uci.gitae.mdem.utils.HMMType;
 import cu.uci.gitae.mdem.utils.HiddenMarkovModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -26,7 +25,7 @@ public class TestHMM {
     HiddenMarkovModel testHMM;
     
     public TestHMM() throws Exception {
-        testHMM = new HiddenMarkovModel(3, 3, HMMType.Forward);
+        
     }
     
     @Test public void hmmEM(){
