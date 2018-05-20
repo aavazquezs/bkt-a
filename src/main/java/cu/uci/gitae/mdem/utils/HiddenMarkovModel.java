@@ -1,6 +1,5 @@
 package cu.uci.gitae.mdem.utils;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
@@ -368,7 +367,7 @@ public class HiddenMarkovModel {
         double[][][] xi = new double[this.n][this.n][T];
         for (int i = 0; i < this.n; i++) {
             for (int j = 0; j < this.n; j++) {
-                for (int t = 0; t < T; t++) {
+                for (int t = 0; t < T-1; t++) {
                     xi[i][j][t] = alpha[i][t] * A[i][j] * B[j][obs[t + 1]] * beta[j][t + 1] / probObs;
                 }
             }
@@ -376,6 +375,31 @@ public class HiddenMarkovModel {
         return xi;
     }
 
+    /**
+     * Producto de los scaling desde 0 hasta t.
+     * @param t Limite superior de la piatoria.
+     * @return double
+     */
+    protected double getC(int t){
+        double prom = 1.0;
+        for (int i = 0; i < t; i++) {
+            prom *= this.scaling[i];
+        }
+        return prom;
+    }
+    /**
+     * Producto de los scaling desde t hasta T.
+     * @param t
+     * @return double
+     */
+    protected double getD(int t){
+        double prom = 1.0;
+        for (int i = 0; i < this.scaling.length; i++) {
+            prom *= this.scaling[i];
+        }
+        return prom;
+    }
+    
     public void algorithmBaumWelch(int[] obs, double threshold){
         double error = Double.MAX_VALUE;
         double[][] alpha = this.forwardProc(obs);
@@ -396,7 +420,7 @@ public class HiddenMarkovModel {
             for (int i = 0; i < this.n; i++) {
                 for (int j = 0; j < this.n; j++) {
                     double acumGanmma = 0.0, acumXi = 0.0;
-                    for (int t = 0; t < obs.length; t++) {
+                    for (int t = 0; t < obs.length-1; t++) {
                         acumGanmma += gamma[i][t];
                         acumXi += xi[i][j][t];
                     }
@@ -431,6 +455,64 @@ public class HiddenMarkovModel {
         }
     }
     
+    public void algorithmBaumWelchScaling(int[] obs, double threshold, int maxIterations){
+        double error = Double.MAX_VALUE;
+        int it = 0;
+        
+        double[][] alpha = this.forwardScaling(obs);
+        double[][] beta = this.backwardScaling(obs);
+        double prob = this.getProbability(obs,alpha);
+        double[][] gamma = this.getGamma(obs, alpha, beta, prob);
+        double[][][] xi = this.getXi(obs, alpha, beta, prob);
+        double probNew = 0.0;
+        while(error - threshold > 0 && it < maxIterations){
+            //actualizar pi
+            Double[] new_pi = new Double[this.n];
+            for (int i = 0; i < this.n; i++) {
+                new_pi[i] = gamma[i][0]; 
+            }
+            this.pi = new_pi;
+            //actualizar A
+            Double[][] a = new Double[this.n][this.n];
+            for (int i = 0; i < this.n; i++) {
+                for (int j = 0; j < this.n; j++) {
+                    double numerador = 0.0, denominador = 0.0;
+                    for (int t = 0; t < obs.length-1; t++) {
+                        numerador += alpha[i][t]*A[i][j]*B[j][obs[t+1]]*beta[j][t+1];
+                        denominador += alpha[i][t]*beta[i][t]/this.scaling[t];
+                    }
+                    a[i][j] = numerador/denominador;
+                }
+            }
+            this.A = a;
+            //actualizar B
+            Double[][] b = new Double[this.n][this.m];
+            double sum = 0.0;
+            for (int j = 0; j < this.n; j++) {
+                for (int k = 0; k < this.m; k++) {
+                    double acum_k = 0.0, acum = 0.0;
+                    for (int t = 0; t < obs.length; t++) {
+                        double actual = alpha[j][t]*beta[j][t]/this.scaling[t];
+                        if(obs[t]==k){
+                            acum_k += actual;
+                        }
+                        acum += actual;
+                    }
+                    b[j][k] = acum_k / acum;
+                }
+            }
+            this.B = b;
+            
+            alpha = this.forwardProc(obs);
+            beta = this.backwardProc(obs);
+            probNew = this.getProbability(obs,alpha);
+            gamma = this.getGamma(obs, alpha, beta, prob);
+            xi = this.getXi(obs, alpha, beta, prob);
+            error = Math.abs(prob-probNew);
+            prob = probNew;
+            it++;
+        }
+    }
     /**
      * Prints everything about this model, including all values. For debug
      * purposes or if you want to comprehend what happend to the model.
@@ -439,6 +521,26 @@ public class HiddenMarkovModel {
     public void print() {
         int numStates = this.n;
         int numObservations = this.m;
+        System.out.println("Pi:");
+        for (int i = 0; i < this.n; i++) {
+            System.out.printf("%.2f ",pi[i]);
+        }
+        System.out.println("");
+        System.out.println("A:");
+        for (int i = 0; i < this.n; i++) {
+            for (int j = 0; j < this.n; j++) {
+                System.out.printf("%.2f ",A[i][j]);
+            }
+            System.out.println("");
+        }
+        System.out.println("B:");
+        for (int i = 0; i < this.n; i++) {
+            for (int j = 0; j < this.m; j++) {
+                System.out.printf("%.2f ",B[i][j]);
+            }
+            System.out.println("");
+        }
+        /*
         DecimalFormat fmt = new DecimalFormat();
         fmt.setMinimumFractionDigits(5);
         fmt.setMaximumFractionDigits(5);
@@ -461,6 +563,7 @@ public class HiddenMarkovModel {
             }
             System.out.println("");
         }
+        */
     }
 
     //getters and setters
