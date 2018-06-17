@@ -73,7 +73,7 @@ public class BruteForceFitting extends FittingMethodImpl {
         this.items = items;
         this.sortItems(items);
         Map<String, Parametros> resultado = new HashMap<>();
-        List<String> habilidades = this.getHabilidades();
+        List<String> habilidades = this.getHabilidades(this.items);
         habilidades.forEach(h->{
             Parametros actual = this.ajustarModeloHabilidad(h);
             resultado.put(h, actual);
@@ -195,50 +195,6 @@ public class BruteForceFitting extends FittingMethodImpl {
         }
 
         return SSR;
-    }
-
-    /**
-     * Ordena los items primero por la habilidad y luego por los estudiantes.
-     *
-     * @param items
-     */
-    private void sortItems(List<Item> items) {
-        Collections.sort(items, (Item i1, Item i2) -> {
-            int valor = i1.getHabilidad().compareTo(i2.getHabilidad());
-            if (valor == 0) {
-                return i1.getEstudiante().compareTo(i2.getEstudiante());
-            }
-            return valor;
-        });
-    }
-
-    /**
-     * Obtener las habilidades del dataset
-     * @return 
-     */
-    private List<String> getHabilidades() {
-        List<String> habilidades = items
-                .stream()
-                .map(i -> {
-                    return i.getHabilidad();
-                })
-                .distinct()
-                .collect(Collectors.toList());
-        return habilidades;
-    }
-
-    /**
-     * Obtener una lista de los estudiantes en los items actuales.
-     * @param itemsActuales
-     * @return 
-     */
-    private List<String> getEstudiantes(List<Item> itemsActuales) {
-        return itemsActuales.stream()
-                .map(i -> {
-                    return i.getEstudiante();
-                })
-                .distinct()
-                .collect(Collectors.toList());
     }
 
     @Override

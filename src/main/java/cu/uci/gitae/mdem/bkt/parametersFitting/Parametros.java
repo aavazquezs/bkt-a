@@ -64,5 +64,10 @@ public class Parametros {
     public void setS(double s) {
         this.s = s;
     }
+
+    @Override
+    public String toString() {
+        return "[pL0: "+this.l0+", pT: "+this.t+", pG: "+this.g+", pS: "+this.s+"]"; //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
