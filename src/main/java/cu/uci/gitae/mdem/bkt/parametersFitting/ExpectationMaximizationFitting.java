@@ -1,12 +1,10 @@
 package cu.uci.gitae.mdem.bkt.parametersFitting;
 
-import cu.uci.gitae.mdem.bkt.BKT;
 import cu.uci.gitae.mdem.bkt.Item;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.math3.util.Pair;
 import org.apache.spark.sql.Dataset;
 
 /**
@@ -101,18 +99,13 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
         return log_likelihood;
     }
 
-    private double newPL(Parametros param, double prevPL) {
-        double newPL = prevPL + param.getT() * (1.0 - prevPL);
-        return newPL;
-    }
-
     @Override
     public Map<String, Parametros> fitParameters(Dataset<Item> dataset) {
         return null;
     }
 
-    private double sumLogLikelihood(Parametros param, List<Item> items) {
-
-        return 0.0;
+    @Override
+    protected Parametros ajustarModeloHabilidad(String habilidad) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

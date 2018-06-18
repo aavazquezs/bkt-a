@@ -1,9 +1,7 @@
 package cu.uci.gitae.mdem.bkt.parametersFitting;
 
-import cu.uci.gitae.mdem.bkt.BKT;
 import cu.uci.gitae.mdem.bkt.Item;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +85,8 @@ public class BruteForceFitting extends FittingMethodImpl {
      *
      * @param habilidad
      */
-    private Parametros ajustarModeloHabilidad(String habilidad) {
+    @Override
+    protected Parametros ajustarModeloHabilidad(String habilidad) {
         double SSR = 0.0; //suma de cuadrados residuales
         double bestSSR = 9999999.0;
         double bestL0 = 0.01;

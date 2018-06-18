@@ -40,7 +40,8 @@ public class EmpiricalProbabilitiesFitting extends FittingMethodImpl {
      * @param habilidad
      * @return 
      */
-    private Parametros ajustarModeloHabilidad(String habilidad) {
+    @Override
+    protected Parametros ajustarModeloHabilidad(String habilidad) {
         Parametros resultado = new Parametros();
         List<Item> actuales = items.stream()
                 .filter(i -> {

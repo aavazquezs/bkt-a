@@ -62,4 +62,6 @@ public abstract class FittingMethodImpl implements FittingMethod {
                 .collect(Collectors.toList());
         return estudiantes;
     }
+    
+    protected abstract Parametros ajustarModeloHabilidad(String habilidad);
 }

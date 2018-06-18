@@ -15,12 +15,21 @@ public class Parametros {
     public Parametros() {
     }
 
+    public Parametros(Parametros copy) {
+        this.l0 = copy.l0;
+        this.t = copy.t;
+        this.g = copy.g;
+        this.s = copy.s;
+    }
+
     public Parametros(double l0, double t, double g, double s) {
         this.l0 = l0;
         this.t = t;
         this.g = g;
         this.s = s;
     }
+    
+    
 
     /**
      * Inicializa de forma aleatoria el conjunto de parámetros.

@@ -44,7 +44,8 @@ public class BaumWelchFitting extends FittingMethodImpl{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private Parametros ajustarModeloHabilidad(String habilidad){
+    @Override
+    protected Parametros ajustarModeloHabilidad(String habilidad){
         List<Item> itemsActuales = items
                 .stream().parallel()
                 .filter(t -> {
