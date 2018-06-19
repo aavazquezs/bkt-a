@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class StandardBKTTest {
 
-    String pathToDataset = "./data/dataset.tsv";
+    String pathToDataset = "./data/dataset2.tsv";
     List<String[]> dataset;
 
     public StandardBKTTest() {

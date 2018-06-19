@@ -35,7 +35,7 @@ public class FittingTest {
     String pathToFile;
 
     public FittingTest() {
-        pathToFile = "./data/dataset.tsv";
+        pathToFile = "./data/dataset2.tsv";
     }
 
     @BeforeClass
@@ -142,7 +142,7 @@ public class FittingTest {
         System.out.println("TEST: bruteForceFitting");
         List<Item> items = this.cargaDatasetStream()
                 .collect(Collectors.toList());
-        BruteForceFitting bff = new BruteForceFitting(false, true, false);
+        BruteForceFitting bff = new BruteForceFitting(true, true);
         Map<String, Parametros> resultado = bff.fitParameters(items);
         resultado.forEach((llave, valor) -> {
             System.out.println("[Habilidad: " + llave + ", Parametros: " + valor.toString() + "]");

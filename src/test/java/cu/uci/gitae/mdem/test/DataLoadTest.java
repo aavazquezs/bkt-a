@@ -58,7 +58,7 @@ public class DataLoadTest {
     //
     @Test
     public void dataLoad() {
-        String pathToDataset = "./data/dataset.tsv";
+        String pathToDataset = "./data/dataset2.tsv";
         String masterConfig = "local";
         DataLoad dataLoad = new DataLoadImpl(sparkSession);
         Map<String, String> param = new HashMap<>();

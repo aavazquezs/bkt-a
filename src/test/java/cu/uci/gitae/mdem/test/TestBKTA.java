@@ -24,7 +24,7 @@ public class TestBKTA {
     private BKTA bkta;
 
     public TestBKTA() {
-        bkta = new BKTA("local[2]", "./data/dataset.tsv");
+        bkta = new BKTA("local[2]", "./data/dataset2.tsv");
     }
 
     @BeforeClass
@@ -50,7 +50,7 @@ public class TestBKTA {
      public void prueba() {
          //carga de datos
          Map<String, String> param = new HashMap<>();
-         param.put("datasetPath", "./data/dataset.tsv");
+         param.put("datasetPath", "./data/dataset2.tsv");
          param.put("emptySymbol", "?");
          Dataset<Row> dataset = bkta.getDataset(DataSourceType.TSV, param);
          assertNotNull(dataset);
