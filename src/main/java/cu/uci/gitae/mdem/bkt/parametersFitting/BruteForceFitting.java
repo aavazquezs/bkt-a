@@ -18,21 +18,22 @@ public class BruteForceFitting extends FittingMethodImpl {
 
     private boolean acotadoL0yT;
     private boolean acotadoGyS;
-    private boolean estimacionLnMenos1;
+    //private boolean estimacionLnMenos1;
+    private Map<String, Double> top = new HashMap<>();
     private List<Item> items;
 
     public BruteForceFitting() {
         super();
         this.acotadoGyS = false;
         this.acotadoL0yT = false;
-        this.estimacionLnMenos1 = false;
+        //this.estimacionLnMenos1 = false;
         this.items = new ArrayList<>();
     }
 
-    public BruteForceFitting(boolean acotadoL0yT, boolean acotadoGyS, boolean estimacionLnMenos1) {
+    public BruteForceFitting(boolean acotadoL0yT, boolean acotadoGyS) {
         this.acotadoL0yT = acotadoL0yT;
         this.acotadoGyS = acotadoGyS;
-        this.estimacionLnMenos1 = estimacionLnMenos1;
+//        this.estimacionLnMenos1 = estimacionLnMenos1;
         this.items = new ArrayList<>();
     }
 
@@ -52,13 +53,13 @@ public class BruteForceFitting extends FittingMethodImpl {
         return acotadoGyS;
     }
 
-    public boolean isEstimacionLnMenos1() {
-        return estimacionLnMenos1;
-    }
-
-    public void setEstimacionLnMenos1(boolean estimacionLnMenos1) {
-        this.estimacionLnMenos1 = estimacionLnMenos1;
-    }
+//    public boolean isEstimacionLnMenos1() {
+//        return estimacionLnMenos1;
+//    }
+//
+//    public void setEstimacionLnMenos1(boolean estimacionLnMenos1) {
+//        this.estimacionLnMenos1 = estimacionLnMenos1;
+//    }
 
     /**
      * Ajusta los parametros del algoritmo (L0, T, G, S) para cada habilidad.
@@ -84,45 +85,45 @@ public class BruteForceFitting extends FittingMethodImpl {
      * una precision de dos cifras decimales.
      *
      * @param habilidad
+     * @return 
      */
     @Override
     protected Parametros ajustarModeloHabilidad(String habilidad) {
-        double SSR = 0.0; //suma de cuadrados residuales
-        double bestSSR = 9999999.0;
-        double bestL0 = 0.01;
-        double bestT = 0.01;
-        double bestG = 0.01;
-        double bestS = 0.01;
-        double topG = 0.99;
-        double topS = 0.99;
-        double topL0 = 0.99;
-        double topT = 0.99;
-        if (acotadoL0yT) {
-            topL0 = 0.85;
-            topT = 0.3;
-        }
-        if (acotadoGyS) {
-            topG = 0.3;
-            topS = 0.1;
-        }
-        List<Item> itemsActuales = items
-                .stream()
+        List<Item> itemsActuales = items.stream().parallel()
                 .filter(t -> {
                     return t.getHabilidad().equals(habilidad);
                 })
                 .collect(Collectors.toList());
-
-        for (double L0 = 0.01; L0 <= topL0; L0 += 0.01) {
-            for (double T = 0.01; T <= topT; T += 0.01) {
-                for (double G = 0.01; G <= topG; G += 0.01) {
-                    for (double S = 0.01; S <= topS; S += 0.01) {
-                        SSR = this.findSSR(L0, T, G, S, itemsActuales);
+        
+        double SSR, bestSSR = Double.MAX_VALUE;
+        Parametros best = new Parametros(0.01, 0.01, 0.01, 0.01);
+        
+        if(acotadoL0yT){
+            top.put("L0", 0.85);
+            top.put("T", 0.3);
+        }else{
+            top.put("L0", 0.99);
+            top.put("T", 0.99);
+        }
+        if (acotadoGyS) {
+            top.put("G", 0.3);
+            top.put("S", 0.1);
+        }else{
+            top.put("G", 0.99);
+            top.put("S", 0.99);
+        }
+        
+        Parametros paramsActual;
+        
+        for (double L0 = 0.01; L0 <= top.get("L0"); L0 += 0.01) {
+            for (double T = 0.01; T <= top.get("T"); T += 0.01) {
+                for (double G = 0.01; G <= top.get("G"); G += 0.01) {
+                    for (double S = 0.01; S <= top.get("S"); S += 0.01) {
+                        paramsActual = new Parametros(L0, T, G, S);
+                        SSR = this.findSSR(paramsActual, itemsActuales);
                         if (SSR < bestSSR) {
                             bestSSR = SSR;
-                            bestL0 = L0;
-                            bestT = T;
-                            bestS = S;
-                            bestG = G;
+                            best = new Parametros(paramsActual);
                         }
                     }
                 }
@@ -130,28 +131,23 @@ public class BruteForceFitting extends FittingMethodImpl {
         }
         
         //para buscar mas precision
-        double startL0 = bestL0;
-        double startT = bestT;
-        double startG = bestG;
-        double startS = bestS;
-        for (double l0 = startL0 - 0.009; l0 <= startL0 + 0.009 && l0 <= topL0; l0 += 0.001) {
-            for (double t = startT - 0.009; t <= startT + 0.009 && t <= topT; t += 0.001) {
-                for (double g = startG - 0.009; g <= startG + 0.009 && g <= topG; g += 0.001) {
-                    for (double s = startS - 0.009; s <= startS + 0.009 && s <= topS; s += 0.001) {
-                        SSR = findSSR(l0, t, g, s, itemsActuales);
+        Parametros start = new Parametros(best);
+
+        for (double l0 = start.getL0() - 0.009; l0 <= start.getL0() + 0.009 && l0 <= top.get("L0"); l0 += 0.001) {
+            for (double t = start.getT() - 0.009; t <= start.getT() + 0.009 && t <= top.get("T"); t += 0.001) {
+                for (double g = start.getG() - 0.009; g <= start.getG() + 0.009 && g <= top.get("G"); g += 0.001) {
+                    for (double s = start.getS() - 0.009; s <= start.getS() + 0.009 && s <= top.get("S"); s += 0.001) {
+                        paramsActual = new Parametros(l0, t, g, s);
+                        SSR = findSSR(paramsActual, itemsActuales);
                         if (SSR < bestSSR) {
                             bestSSR = SSR;
-                            bestL0 = l0;
-                            bestT = t;
-                            bestS = s;
-                            bestG = g;
+                            best = new Parametros(paramsActual);
                         }
                     }
                 }
             }
         }
-        Parametros parametros = new Parametros(bestL0, bestT, bestG, bestS);
-        return parametros;
+        return best;
     }
 
     /**
@@ -163,34 +159,30 @@ public class BruteForceFitting extends FittingMethodImpl {
      * @param itemsActuales
      * @return 
      */
-    private double findSSR(double l0, double t, double g, double s, List<Item> itemsActuales) {
+    private double findSSR(Parametros param, List<Item> itemsActuales) {
         double SSR = 0.0;
         String estudianteAnterior = items.get(0).getEstudiante();
         double prevL = 0.0;
-        double likelihoodCorrect = 0.0;
-        double prevLGivenResult = 0.0;
-        double newL = 0.0;
+        double likelihoodCorrect, prevLGivenResult;
 
-        for (Item item : items) {
+        for (Item item : itemsActuales) {
             if (!item.getEstudiante().equalsIgnoreCase(estudianteAnterior)) {
-                prevL = l0;
+                prevL = param.getL0();
                 estudianteAnterior = item.getEstudiante();
             }
-            if (isEstimacionLnMenos1()) {
-                likelihoodCorrect = prevL;
-            } else {
-                likelihoodCorrect = prevL * (1.0 - s) + (1.0 - prevL) * g;
-            }
+
+            likelihoodCorrect = prevL * (1.0 - param.getS()) + (1.0 - prevL) * param.getG();
+            
             double respuestaActual = item.isCorrecto() ? 1.0 : 0.0;
             SSR += (respuestaActual - likelihoodCorrect) * (respuestaActual - likelihoodCorrect);
+            
             if (item.isCorrecto()) {
-                prevLGivenResult = (prevL * (1.0 - s)) / (prevL * (1 - s) + (1.0 - prevL) * g);
+                prevLGivenResult = (prevL * (1.0 - param.getS())) / (prevL * (1 - param.getS()) + (1.0 - prevL) * param.getG());
             } else {
-                prevLGivenResult = (prevL * s) / (prevL * s + (1.0 - prevL) * (1.0 - g));
+                prevLGivenResult = (prevL * param.getS()) / (prevL * param.getS() + (1.0 - prevL) * (1.0 - param.getG()));
             }
 
-            newL = prevLGivenResult + (1.0 - prevLGivenResult) * t;
-            prevL = newL;
+            prevL = prevLGivenResult + (1.0 - prevLGivenResult) * param.getT();
         }
 
         return SSR;
