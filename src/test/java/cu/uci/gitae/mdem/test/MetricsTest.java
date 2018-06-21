@@ -22,23 +22,24 @@ import static org.junit.Assert.*;
  * @author angel
  */
 public class MetricsTest {
-    
+
     public MetricsTest() {
     }
+
     /**
-
-p
-n
-p
-n
-
+     *
+     * p
+     * n
+     * p
+     * n
+     *
      */
     @Test
-    public void rocCurveTest() throws Exception{
-        Double[] classification = new Double[]{1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 
-                                               1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0};
-        Double[] score = new Double[]{0.9, 0.8, 0.7, 0.6, 0.55, 0.54, 0.53, 0.52, 0.51, 0.505, 
-                                      0.4, 0.39, 0.38, 0.37, 0.36, 0.35, 0.34, 0.33, 0.3, 0.1};
+    public void rocCurveTest() throws Exception {
+        Double[] classification = new Double[]{1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+            1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0};
+        Double[] score = new Double[]{0.9, 0.8, 0.7, 0.6, 0.55, 0.54, 0.53, 0.52, 0.51, 0.505,
+            0.4, 0.39, 0.38, 0.37, 0.36, 0.35, 0.34, 0.33, 0.3, 0.1};
         ROC roc = new ROC(Arrays.asList(classification), Arrays.asList(score), 10, 10);
         List<Pair<Double, Double>> points = roc.getRocCurve();
         List<Pair<Double, Double>> results = new ArrayList<>();
@@ -66,5 +67,21 @@ n
         assertArrayEquals(results.toArray(), points.toArray());
         //Saving to a File
         roc.exportRocCurveToFile(points, "./out/RocCurve.png", 500, 500);
+    }
+
+    @Test
+    public void calculateAUC() {
+        Double[] classification = new Double[]{1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+            1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0};
+        Double[] score = new Double[]{0.9, 0.8, 0.7, 0.6, 0.55, 0.54, 0.53, 0.52, 0.51, 0.505,
+            0.4, 0.39, 0.38, 0.37, 0.36, 0.35, 0.34, 0.33, 0.3, 0.1};
+        try {
+            ROC roc = new ROC(Arrays.asList(classification), Arrays.asList(score), 10, 10);
+            Double auc = roc.getAUC();
+            assertEquals(new Double(0.68), auc);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
     }
 }
