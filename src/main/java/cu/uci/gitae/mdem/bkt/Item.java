@@ -65,4 +65,13 @@ public class Item implements Serializable{
     public void setProblem(String problem) {
         this.problem = problem;
     }
+
+    @Override
+    public String toString() {
+        String item = "[ correcto: "+(this.correcto?"1":"0")+",\testudiante_id: "+this.estudiante
+                +",\thabilidad: "+this.habilidad+",\tproblema: "+this.problem+"]";
+        return item; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 }

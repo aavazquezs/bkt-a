@@ -37,7 +37,7 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
                 .collect(Collectors.toList());
 
         for (String habilidad : habilidades) { //Calcular parámetros para cada habilidad 
-            List<Item> itemsHabilidad = items //Obtener los items para esa habilidad.
+            List<Item> itemsHabilidad = items  //Obtener los items para esa habilidad.
                     .stream().parallel()
                     .filter(item -> {
                         return item.getHabilidad().equalsIgnoreCase(habilidad);
@@ -55,6 +55,7 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
             double menorErrorCuadrado = Double.MAX_VALUE; //parametro de control
             while (menorErrorCuadrado >= epsilon) {
                 //Paso E: se estiman los datos faltantes en base a los parámetros actuales.
+                
                 /*2. Utilizar los datos conocidos con los parámetros actuales para 
                 estimar los valores de la variable(s) oculta(s).*/
                 

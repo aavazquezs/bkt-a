@@ -1,5 +1,6 @@
 package cu.uci.gitae.mdem.bkt;
 
+import cu.uci.gitae.mdem.bkt.parametersFitting.Parametros;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,13 @@ public class BKT {
         this.pSlip = pSlip;
         this.pT = pT;
         this.items = new ArrayList<>();
+    }
+    
+    public BKT(Parametros param){
+        this.pL0 = param.getL0();
+        this.pT = param.getT();
+        this.pGuess = param.getG();
+        this.pSlip = param.getS();
     }
 
     public BKT(Double pL0, Double pGuess, Double pSlip, Double pT, List<Item> items) {

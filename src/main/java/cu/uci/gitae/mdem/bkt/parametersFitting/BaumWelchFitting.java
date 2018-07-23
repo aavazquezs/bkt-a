@@ -74,7 +74,7 @@ public class BaumWelchFitting extends FittingMethodImpl{
                 .mapToInt(Integer::intValue)
                 .toArray();
         //entrenar 
-        hmm.algorithmBaumWelchLog(obs, 0.001, 100);//ver como ajustar estos parametros.
+        hmm.algorithmBaumWelchLog(obs, 0.001, 100);//TODO ver como ajustar estos parametros.
         Parametros resultado = new Parametros();
         resultado.setL0(hmm.getPi()[0]);
         resultado.setT(hmm.getA()[1][0]);

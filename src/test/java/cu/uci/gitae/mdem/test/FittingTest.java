@@ -7,6 +7,7 @@ import cu.uci.gitae.mdem.bkt.parametersFitting.EmpiricalProbabilitiesFitting;
 import cu.uci.gitae.mdem.bkt.parametersFitting.FittingMethod;
 import cu.uci.gitae.mdem.bkt.parametersFitting.Parametros;
 import cu.uci.gitae.mdem.bkt.parametersFitting.SimulatedAnnealingFitting;
+import cu.uci.gitae.mdem.metrics.FittingMethodValidation;
 import cu.uci.gitae.mdem.utils.AnnotatingKnowledge;
 import cu.uci.gitae.mdem.utils.LoadTSV;
 import java.io.FileNotFoundException;
@@ -80,7 +81,7 @@ public class FittingTest {
     }
 
     //PRUEBAS SOBRE AJUSTE DE PARAMETROS
-    @Test
+//    @Test
     public void cargarDataset() throws FileNotFoundException {
         System.out.println("TEST: cargarDataset");
 
@@ -137,7 +138,7 @@ public class FittingTest {
 
     }
 
-    @Test
+//    @Test
     public void bruteForceFitting() throws FileNotFoundException {
         System.out.println("TEST: bruteForceFitting");
         List<Item> items = this.cargaDatasetStream()
@@ -157,7 +158,7 @@ public class FittingTest {
         assertArrayEquals(new Double[]{0.5, 0.5, 1.0, 1.0, 1.0}, k);
     }
 
-    @Test
+//    @Test
     public void empiricalProbabilitiesFitting() throws FileNotFoundException {
         System.out.println("TEST: empiricalProbabilitiesFitting");
         String habilidad = "ALT:PARALLELOGRAM-AREA";
@@ -174,7 +175,7 @@ public class FittingTest {
         });
     }
 
-    @Test
+//    @Test
     public void simulatedAnnealingFitting() {
         System.out.println("TEST: simulatedAnnealingFitting");
         try {
@@ -190,5 +191,4 @@ public class FittingTest {
         }
 
     }
-
 }
