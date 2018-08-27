@@ -115,10 +115,10 @@ public class BruteForceFitting extends FittingMethodImpl {
         
         Parametros paramsActual;
         
-        for (double L0 = 0.01; L0 <= top.get("L0"); L0 += 0.01) {
-            for (double T = 0.01; T <= top.get("T"); T += 0.01) {
-                for (double G = 0.01; G <= top.get("G"); G += 0.01) {
-                    for (double S = 0.01; S <= top.get("S"); S += 0.01) {
+        for (double L0 = 0.1; L0 <= top.get("L0"); L0 += 0.1) {
+            for (double T = 0.1; T <= top.get("T"); T += 0.1) {
+                for (double G = 0.1; G <= top.get("G"); G += 0.1) {
+                    for (double S = 0.1; S <= top.get("S"); S += 0.1) {
                         paramsActual = new Parametros(L0, T, G, S);
                         SSR = this.findSSR(paramsActual, itemsActuales);
                         if (SSR < bestSSR) {
@@ -131,12 +131,13 @@ public class BruteForceFitting extends FittingMethodImpl {
         }
         
         //para buscar mas precision
+        
         Parametros start = new Parametros(best);
 
-        for (double l0 = start.getL0() - 0.009; l0 <= start.getL0() + 0.009 && l0 <= top.get("L0"); l0 += 0.001) {
-            for (double t = start.getT() - 0.009; t <= start.getT() + 0.009 && t <= top.get("T"); t += 0.001) {
-                for (double g = start.getG() - 0.009; g <= start.getG() + 0.009 && g <= top.get("G"); g += 0.001) {
-                    for (double s = start.getS() - 0.009; s <= start.getS() + 0.009 && s <= top.get("S"); s += 0.001) {
+        for (double l0 = start.getL0() - 0.09; l0 <= start.getL0() + 0.09 && l0 <= top.get("L0"); l0 += 0.01) {
+            for (double t = start.getT() - 0.09; t <= start.getT() + 0.09 && t <= top.get("T"); t += 0.01) {
+                for (double g = start.getG() - 0.09; g <= start.getG() + 0.09 && g <= top.get("G"); g += 0.01) {
+                    for (double s = start.getS() - 0.09; s <= start.getS() + 0.09 && s <= top.get("S"); s += 0.01) {
                         paramsActual = new Parametros(l0, t, g, s);
                         SSR = findSSR(paramsActual, itemsActuales);
                         if (SSR < bestSSR) {
@@ -147,6 +148,7 @@ public class BruteForceFitting extends FittingMethodImpl {
                 }
             }
         }
+        
         return best;
     }
 

@@ -1,6 +1,7 @@
 package cu.uci.gitae.mdem.bkt.parametersFitting;
 
 import cu.uci.gitae.mdem.bkt.Item;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import org.apache.spark.sql.Dataset;
  */
 public class ExpectationMaximizationFitting extends FittingMethodImpl {
 
+    private int maxIt;
+    
     /**
      * Método para estimar los parámetros de BKT mediante el metodo de
      * maximización de la expectación. Se calcula el conjunto de parámetros para
@@ -37,7 +40,7 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
                 .collect(Collectors.toList());
 
         for (String habilidad : habilidades) { //Calcular parámetros para cada habilidad 
-            List<Item> itemsHabilidad = items  //Obtener los items para esa habilidad.
+            List<Item> itemsHabilidad = items //Obtener los items para esa habilidad.
                     .stream().parallel()
                     .filter(item -> {
                         return item.getHabilidad().equalsIgnoreCase(habilidad);
@@ -48,33 +51,69 @@ public class ExpectationMaximizationFitting extends FittingMethodImpl {
                     .collect(Collectors.toList());
             /* 1. Iniciar los parámetros desconocidos (probabilidades condicionales) 
             con valores aleatorios (o estimaciones de expertos)*/
+            
+            List<Double> llhs = new ArrayList<>();
             Parametros param = new Parametros(); //hipotesis actual
             param.randomInit(); //inicializados con valores aleatorios
-            double log_likelihood = 0.0;
-
+            double log_likelihood = 0.0, prevLog_likelihood= Double.MIN_VALUE, media;
+            boolean converged = false;
+            int count=0;
             double menorErrorCuadrado = Double.MAX_VALUE; //parametro de control
-            while (menorErrorCuadrado >= epsilon) {
+            while (!converged && count < this.maxIt) {
                 //Paso E: se estiman los datos faltantes en base a los parámetros actuales.
-                
+                log_likelihood = this.EStep(param, itemsHabilidad);
+                //adding the log likelihood
+                llhs.add(log_likelihood);
                 /*2. Utilizar los datos conocidos con los parámetros actuales para 
                 estimar los valores de la variable(s) oculta(s).*/
-                
+                media = llhs.stream().collect(Collectors.averagingDouble(x->{return x;}));
                 //Paso M: se estiman las probabilidades (parámetros) considerando los datos estimados.
                 /*3. Utilizar los valores estimados para completar la tabla de datos.*/
+                param = this.MStep(param, media);
                 /*4. Re-estimar los parámetros con los nuevos datos*/
+                converged = log_likelihood - prevLog_likelihood < epsilon;
+                prevLog_likelihood = log_likelihood;
             }
+            //
+            resultado.put(habilidad, param);
         }
-
+        
         /*Repetir 2-4 hasta que no haya cambios significativos en las 
         probabilidades.*/
-        return null;
+        return resultado;
     }
 
+    private Parametros MStep(Parametros param, Double media){
+        Parametros nuevo = new Parametros();
+        if(param.getL0()+media<=1){
+            nuevo.setL0(param.getL0()+media);
+        }else{
+            nuevo.setL0(param.getL0()+media-1);
+        }
+        if(param.getT()+media<=1){
+            nuevo.setT(param.getT()+media);
+        }else{
+            nuevo.setT(param.getT()+media -1 );
+        }
+        if(param.getG()+media <=1){
+            nuevo.setG(param.getG()+media);
+        }else{
+            nuevo.setG(param.getG()+media-1);
+        }
+        if(param.getS()+media <=1){
+            nuevo.setS(param.getS()+media);
+        }else{
+            nuevo.setS(param.getS()+media-1);
+        }
+        return nuevo;
+    }
+    
     /**
-     * Calcula el likelihood de 
+     * Calcula el likelihood de
+     *
      * @param paramIniciales
      * @param items
-     * @return 
+     * @return
      */
     private double EStep(Parametros paramIniciales, List<Item> items) {
         double log_likelihood = 0.0;
