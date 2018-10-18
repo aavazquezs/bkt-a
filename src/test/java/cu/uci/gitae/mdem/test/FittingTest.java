@@ -4,6 +4,7 @@ import cu.uci.gitae.mdem.bkt.BKT;
 import cu.uci.gitae.mdem.bkt.Item;
 import cu.uci.gitae.mdem.bkt.parametersFitting.BruteForceFitting;
 import cu.uci.gitae.mdem.bkt.parametersFitting.EmpiricalProbabilitiesFitting;
+import cu.uci.gitae.mdem.bkt.parametersFitting.ExpectationMaximizationFitting;
 import cu.uci.gitae.mdem.bkt.parametersFitting.FittingMethod;
 import cu.uci.gitae.mdem.bkt.parametersFitting.Parametros;
 import cu.uci.gitae.mdem.bkt.parametersFitting.SimulatedAnnealingFitting;
@@ -189,6 +190,21 @@ public class FittingTest {
             fail("Exception ocurred");
             Logger.getLogger(FittingTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+    }
+    
+    @Test
+    public void emFitting(){
+        System.out.println("TEST: Expectation Maximization Fitting");
+        try {
+            List<Item> items = cargaDataset();
+            FittingMethod fm = new ExpectationMaximizationFitting();
+            Map<String, Parametros> map = fm.fitParameters(items);
+            map.forEach((k, v) -> {
+                System.out.println("[Habilidad: " + k + ", Parametros: " + v.toString() + "]");
+            });
+        } catch (FileNotFoundException ex) {
+            fail("Exception ocurred");
+            Logger.getLogger(FittingTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

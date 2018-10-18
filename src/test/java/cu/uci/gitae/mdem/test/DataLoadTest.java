@@ -59,11 +59,10 @@ public class DataLoadTest {
     @Test
     public void dataLoad() {
         String pathToDataset = "./data/dataset2.tsv";
-        String masterConfig = "local";
-        DataLoad dataLoad = new DataLoadImpl(sparkSession);
+        DataLoad dataLoad = new DataLoadImpl();
         Map<String, String> param = new HashMap<>();
         param.put("datasetPath", pathToDataset);
-        Dataset<Row> dataset = dataLoad.loadData(DataSourceType.TSV, param);
+        Dataset<Row> dataset = dataLoad.loadData(sparkSession, DataSourceType.TSV, param);
         assertNotNull(dataset);
         System.out.println(dataset.count());
     }

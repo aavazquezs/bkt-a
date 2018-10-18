@@ -1,6 +1,7 @@
 package cu.uci.gitae.mdem.bkt;
 
 import java.io.Serializable;
+import org.apache.spark.sql.Row;
 
 /**
  *

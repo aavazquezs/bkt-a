@@ -2,6 +2,7 @@ package cu.uci.gitae.mdem.test;
 
 import cu.uci.gitae.mdem.bkt.Item;
 import cu.uci.gitae.mdem.bkt.parametersFitting.BaumWelchFitting;
+import cu.uci.gitae.mdem.bkt.parametersFitting.BruteForceFitting;
 import cu.uci.gitae.mdem.bkt.parametersFitting.EmpiricalProbabilitiesFitting;
 import cu.uci.gitae.mdem.bkt.parametersFitting.ExpectationMaximizationFitting;
 import cu.uci.gitae.mdem.bkt.parametersFitting.FittingMethod;
@@ -200,10 +201,25 @@ public class MetricsTest {
             Logger.getLogger(MetricsTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+//    @Test 
+    public void printStudentIds() throws FileNotFoundException{
+        Stream<Item> itemsStream = cargaDatasetStream("./data/test/dataset2.tsv");
+        List<String> studentsId = itemsStream
+                .map(i->{
+                    return i.getEstudiante();
+                })
+                .distinct()
+                .collect(Collectors.toList());
+        studentsId.forEach(x->{
+            System.out.println(x);
+        });
+    }
 
-    @Test
+//    @Test
     public void calculateAucForAllStudent() throws FileNotFoundException, Exception {
-        Stream<Item> itemsStream = cargaDatasetStream("./data/test/dataset1.tsv");
+//        Stream<Item> itemsStream = cargaDatasetStream("./data/test/dataset1.tsv");
+        Stream<Item> itemsStream = cargaDatasetStream("./data/test/dataset2.tsv");
         List<Item> items = itemsStream.collect(Collectors.toList());
         
         assertNotEquals("La lista de items no puede ser vacia",0, items.size());
@@ -213,7 +229,8 @@ public class MetricsTest {
 //        FittingMethod fm = new RandomFitting();
 //        FittingMethod fm = new EmpiricalProbabilitiesFitting();
 //        FittingMethod fm = new BaumWelchFitting();
-          FittingMethod fm = new ExpectationMaximizationFitting();
+        FittingMethod fm = new BruteForceFitting(true, true);
+//          FittingMethod fm = new ExpectationMaximizationFitting();
         //Map<String, Parametros> map = fm.fitParameters(items);
         FittingMethodValidation fmv = new FittingMethodValidation(items, fm);
 //        Map<String, Double> map = fmv.obtenerAucPorEstudiante();

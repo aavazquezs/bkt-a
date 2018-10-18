@@ -1,12 +1,7 @@
 package cu.uci.gitae.mdem.bkt.dataload;
 
-import cu.uci.gitae.mdem.bkt.Item;
 import java.util.Map;
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Encoder;
-import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
@@ -16,26 +11,29 @@ import org.apache.spark.sql.SparkSession;
  */
 public class DataLoadImpl implements DataLoad {
 
-    JavaSparkContext jsc;
-    SparkSession sparkSession;
+//    JavaSparkContext jsc;
+//    SparkSession sparkSession;
     Dataset<Row> dataset;
 
+    public DataLoadImpl() {
+    }
+
     public DataLoadImpl(String appName, String master) {
-        SparkConf conf = new SparkConf().setAppName(appName).setMaster(master);
-        this.sparkSession = SparkSession.builder()
-                .config(conf)
-                .getOrCreate();
-        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
+//        SparkConf conf = new SparkConf().setAppName(appName).setMaster(master);
+//        this.sparkSession = SparkSession.builder()
+//                .config(conf)
+//                .getOrCreate();
+//        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
     }
 
     public DataLoadImpl(SparkSession sparkSession) {
-        this.sparkSession = sparkSession;
-        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
+//        this.sparkSession = sparkSession;
+//        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
     }
     
 
     @Override
-    public Dataset<Row> loadData(DataSourceType type, Map<String, String> parametros) {
+    public Dataset<Row> loadData(SparkSession sparkSession, DataSourceType type, Map<String, String> parametros) {
         String datasetPath;
         switch (type) {
             case CSV:

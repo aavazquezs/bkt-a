@@ -1,42 +1,42 @@
 package cu.uci.gitae.mdem.bkt;
 
-import cu.uci.gitae.mdem.bkt.dataload.DataLoad;
-import cu.uci.gitae.mdem.bkt.dataload.DataLoadImpl;
-import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
+import cu.uci.gitae.mdem.bkt.parametersFitting.EmpiricalProbabilitiesFitting;
+import cu.uci.gitae.mdem.bkt.parametersFitting.FittingMethod;
 import cu.uci.gitae.mdem.bkt.parametersFitting.Parametros;
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
 
 /**
  * Clase que implementa el algoritmo BKT adaptado a datos masivos.
  *
  * @author angel
  */
-public class BKTA {
+public class BKTA implements Serializable{
 
-    //String masterConfig;
-    //String datasetPath;
+    String masterConfig;
+    String datasetPath;
     Dataset<Row> dataset;
     Dataset<Item> items;
-    DataLoad dataLoad;
-    SparkSession spark;
-
-    public BKTA(String masterConfig, String datasetPath) {
-        //this.masterConfig = masterConfig;
-        //this.datasetPath = datasetPath;
+    //DataLoad dataLoad;
+    
+    Dataset<Row> estudiantes;
+    
+    public BKTA(/*String masterConfig, String datasetPath*/) {
+//        this.masterConfig = masterConfig;
+//        this.datasetPath = datasetPath;
         this.dataset = null;
-        SparkConf conf = new SparkConf().setAppName("BKT-A").setMaster(masterConfig);
-        this.spark = SparkSession.builder()
-                .config(conf)
-                .getOrCreate();
-        this.dataLoad = new DataLoadImpl(spark);
+        //this.dataLoad = new DataLoadImpl();
+    }
+    
+    public void setDataset(Dataset<Row> dataset) {
+        this.dataset = dataset;
     }
 
     /**
@@ -53,10 +53,16 @@ public class BKTA {
      * @param param Parametros necesarios para el tipo de datos elegido
      * @return Conjunto de datos obtenido a partir de la fuente de datos
      */
+    /*
     public Dataset<Row> getDataset(DataSourceType type, Map<String, String> param) {
-        dataset = dataLoad.loadData(DataSourceType.TSV, param);
+        SparkSession spark;
+        SparkConf conf = new SparkConf().setAppName("BKT-A").setMaster(masterConfig);
+        spark = SparkSession.builder()
+                .config(conf)
+                .getOrCreate();
+        dataset = dataLoad.loadData(spark, DataSourceType.TSV, param);
         return dataset;
-    }
+    }*/
 
     /**
      * Metodo para realizar el pre-procesamiento de los datos. Se realiza
@@ -111,6 +117,9 @@ public class BKTA {
                     return i;
                 }, itemEncoder);
         this.items = items;
+        
+        this.estudiantes();
+        
         return items;
     }
 
@@ -118,43 +127,36 @@ public class BKTA {
      * Metodo para realizar el ajuste de parámetros para el algoritmo en
      * paralelo
      *
+     * @param items
      * @param param Parámetros para el método. El parámetro fittingMethod
      * permite determinar que método de ajuste utilizar, por defecto se
      * utilizará Expectation Maximization.
-     * @return
+     * @return Map de parametros por habilidades para cada estudiante
      */
-    public Map<String, Map<String, Parametros>> fitParameters(Map<String, String> param) {
-        Map<String, Map<String, Parametros>> parametrosPorEstudiante;
-        String method = param.get("fittingMethod");
-        switch(method){
-            case "maximizationFitting":
-                parametrosPorEstudiante = this.expectationMaximizationFitting(items);
-                break;
-            case "bruteForce":
-                parametrosPorEstudiante = this.bruteForceFitting(items);
-                break;
-            case "heuristic":
-                parametrosPorEstudiante = this.heuristicFitting(items);
-                break;
-            default:
-                throw new IllegalArgumentException("El método de ajuste "+method+ "no está disponible");
-        }
+    public Map<String, Map<String, Parametros>> fitParameters(Dataset<Item> items, Map<String, String> param) {
+        Map<String, Map<String, Parametros>> parametrosPorEstudiante
+                = new HashMap<>();
+        FittingMethod fm = new EmpiricalProbabilitiesFitting();
+        
+        this.estudiantes.collectAsList().forEach(row->{
+            String estudianteActual = row.getString(0);
+            Dataset<Item> actuales = items.filter(items.col("estudiante").equalTo(estudianteActual));
+            Map<String, Parametros> ptem = fm.fitParameters(actuales);
+            parametrosPorEstudiante.put(estudianteActual, ptem);
+        });
         return parametrosPorEstudiante;
     }
-
-    public Dataset<Item> executeInParallel() {
-        return null;
+    /**
+     * Obtiene un dataset con los estudiantes 
+     * @return 
+     */
+    private Dataset<Row> estudiantes(){
+        this.estudiantes = this.items.select("estudiante").distinct();
+        return this.estudiantes;
     }
-
-    private Map<String, Map<String, Parametros>> expectationMaximizationFitting(Dataset<Item> dataset) {
-        return null;
-    }
-
-    private Map<String, Map<String, Parametros>> bruteForceFitting(Dataset<Item> dataset) {
-        return null;
-    }
-
-    private Map<String, Map<String, Parametros>> heuristicFitting(Dataset<Item> dataset) {
+    
+    public Dataset<Row> executeInParallel() {
+        
         return null;
     }
 

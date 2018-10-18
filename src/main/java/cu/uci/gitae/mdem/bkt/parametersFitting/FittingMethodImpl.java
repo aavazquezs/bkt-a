@@ -4,6 +4,9 @@ import cu.uci.gitae.mdem.bkt.Item;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.spark.api.java.function.MapFunction;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoders;
 
 
 /**
@@ -47,6 +50,17 @@ public abstract class FittingMethodImpl implements FittingMethod {
                 .collect(Collectors.toList());
         return habilidades;
     }
+    
+    protected List<String> getHabilidades(Dataset<Item> items){
+        List<String> habilidades = items
+                .select("habilidad")
+                .distinct()
+                .map((row) -> {
+                    return row.getAs("habilidad");
+                }, Encoders.STRING())
+                .collectAsList();
+        return habilidades;
+    }
     /**
      * Obtener los estudiantes del listado de items
      * @param items
@@ -60,6 +74,17 @@ public abstract class FittingMethodImpl implements FittingMethod {
                 })
                 .distinct()
                 .collect(Collectors.toList());
+        return estudiantes;
+    }
+    
+    protected List<String> getEstudiantes(Dataset<Item> items){
+        List<String> estudiantes = items
+                .select("estudiante")
+                .distinct()
+                .map((row) -> {
+                    return row.getAs("estudiante");
+                }, Encoders.STRING())
+                .collectAsList();
         return estudiantes;
     }
     
