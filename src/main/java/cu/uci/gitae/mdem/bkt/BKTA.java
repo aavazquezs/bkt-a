@@ -18,23 +18,23 @@ import org.apache.spark.sql.Row;
  *
  * @author angel
  */
-public class BKTA implements Serializable{
+public class BKTA implements Serializable {
 
     String masterConfig;
     String datasetPath;
     Dataset<Row> dataset;
     Dataset<Item> items;
     //DataLoad dataLoad;
-    
+
     Dataset<Row> estudiantes;
-    
+
     public BKTA(/*String masterConfig, String datasetPath*/) {
 //        this.masterConfig = masterConfig;
 //        this.datasetPath = datasetPath;
         this.dataset = null;
         //this.dataLoad = new DataLoadImpl();
     }
-    
+
     public void setDataset(Dataset<Row> dataset) {
         this.dataset = dataset;
     }
@@ -63,7 +63,6 @@ public class BKTA implements Serializable{
         dataset = dataLoad.loadData(spark, DataSourceType.TSV, param);
         return dataset;
     }*/
-
     /**
      * Metodo para realizar el pre-procesamiento de los datos. Se realiza
      * selección de atributos. Eliminación de la cabecera del dataset
@@ -117,9 +116,9 @@ public class BKTA implements Serializable{
                     return i;
                 }, itemEncoder);
         this.items = items;
-        
+
         this.estudiantes();
-        
+
         return items;
     }
 
@@ -137,8 +136,8 @@ public class BKTA implements Serializable{
         Map<String, Map<String, Parametros>> parametrosPorEstudiante
                 = new HashMap<>();
         FittingMethod fm = new EmpiricalProbabilitiesFitting();
-        
-        this.estudiantes.collectAsList().forEach(row->{
+        this.estudiantes.collectAsList()
+                .forEach(row -> {
             String estudianteActual = row.getString(0);
             Dataset<Item> actuales = items.filter(items.col("estudiante").equalTo(estudianteActual));
             Map<String, Parametros> ptem = fm.fitParameters(actuales);
@@ -146,18 +145,40 @@ public class BKTA implements Serializable{
         });
         return parametrosPorEstudiante;
     }
+
     /**
-     * Obtiene un dataset con los estudiantes 
-     * @return 
+     * Obtiene un dataset con los estudiantes
+     *
+     * @return
      */
-    private Dataset<Row> estudiantes(){
+    private Dataset<Row> estudiantes() {
         this.estudiantes = this.items.select("estudiante").distinct();
         return this.estudiantes;
     }
-    
-    public Dataset<Row> executeInParallel() {
-        
-        return null;
+
+    public Map<String, Map<String, Double>> executeInParallel(Dataset<Item> items, Map<String, Map<String, Parametros>> ehp) {
+        Map<String, Map<String, Double>> resultado = new HashMap<>();
+        ehp.keySet()
+                .stream()
+                .parallel()
+                .forEach(est -> {
+                    Map<String, Parametros> hp = ehp.get(est);
+                    Dataset<Item> itemsEstudiantes
+                            = items.filter(items.col("estudiante").equalTo(est));
+                    Map<String, Double> habilidades = new HashMap<>();
+                    hp.keySet()
+                            .stream()
+                            .parallel()
+                            .forEach(hab->{
+                                Dataset<Item> itemsEstHab = itemsEstudiantes
+                                        .filter(itemsEstudiantes.col("habilidad").equalTo(hab));
+                                BKT algoritmo = new BKT(items, hp.get(hab));
+                                Double prob = algoritmo.execute2();
+                                habilidades.put(hab, prob);
+                            });
+                    resultado.put(est, habilidades);
+                });
+        return resultado;
     }
 
     public Dataset<Row> getResults() {

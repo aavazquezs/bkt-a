@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 
 /**
  * Ajuste de parametro basado en el algoritmo Simulated Annealing Miller, W. L.,
@@ -160,6 +161,11 @@ public class SimulatedAnnealingFitting extends FittingMethodImpl {
             nuevo.setS(pS);
         }
         return nuevo;
+    }
+
+    @Override
+    public Map<String, Parametros> fitParameters2(Dataset<Row> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

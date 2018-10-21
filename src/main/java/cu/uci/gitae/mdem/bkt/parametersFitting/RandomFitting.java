@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 
 /**
  *
@@ -36,6 +37,11 @@ public class RandomFitting extends FittingMethodImpl {
 
     @Override
     public Map<String, Parametros> fitParameters(Dataset<Item> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<String, Parametros> fitParameters2(Dataset<Row> dataset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

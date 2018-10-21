@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 
 /**
  *
@@ -82,6 +83,11 @@ public class BaumWelchFitting extends FittingMethodImpl{
         resultado.setG(hmm.getB()[1][0]);
         resultado.setS(hmm.getB()[0][1]);
         return resultado;
+    }
+
+    @Override
+    public Map<String, Parametros> fitParameters2(Dataset<Row> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

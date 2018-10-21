@@ -5,6 +5,7 @@ import cu.uci.gitae.mdem.bkt.Item;
 import java.util.List;
 import java.util.Map;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 
 /**
  * Interface que establece el contrato para los métodos de ajuste de parámetros
@@ -26,4 +27,6 @@ public interface FittingMethod {
      * @return arreglo con los parámetros ajustados.
      */
     public Map<String, Parametros> fitParameters(Dataset<Item> dataset);
+    
+    public Map<String, Parametros> fitParameters2(Dataset<Row> dataset);
 }

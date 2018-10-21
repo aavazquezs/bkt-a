@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
+import org.apache.spark.sql.Row;
 
 
 /**
@@ -53,6 +54,17 @@ public abstract class FittingMethodImpl implements FittingMethod {
     
     protected List<String> getHabilidades(Dataset<Item> items){
         List<String> habilidades = items
+                .select("habilidad")
+                .distinct()
+                .map((row) -> {
+                    return row.getAs("habilidad");
+                }, Encoders.STRING())
+                .collectAsList();
+        return habilidades;
+    }
+    
+    protected List<String> getHabilidades2(Dataset<Row> dataset){
+        List<String> habilidades = dataset
                 .select("habilidad")
                 .distinct()
                 .map((row) -> {

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 
 /**
  * Método para el ajuste de parámetros usando fuerza bruta. Basado en el método
@@ -192,6 +193,11 @@ public class BruteForceFitting extends FittingMethodImpl {
 
     @Override
     public Map<String, Parametros> fitParameters(Dataset<Item> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<String, Parametros> fitParameters2(Dataset<Row> dataset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

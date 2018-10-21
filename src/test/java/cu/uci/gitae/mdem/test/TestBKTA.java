@@ -98,5 +98,13 @@ public class TestBKTA {
                 System.out.println("[Habilidad: " + vk + ", Parametros: " + vv.toString() + "]");
             });
         });
+        //Ejecutando en paralelo
+        Map<String, Map<String, Double>> resultado = bkta.executeInParallel(items, ehp);
+        resultado.forEach((k,v)->{
+            System.out.println("Estudiante ID: " + k + "\n--------------------");
+            v.forEach((vk,vv)->{
+                System.out.println("[Habilidad: " + vk + ", Probabilidad: " + vv.toString() + "]");
+            });
+        });
     }
 }

@@ -3,6 +3,7 @@ package cu.uci.gitae.mdem.bkt;
 import cu.uci.gitae.mdem.bkt.parametersFitting.Parametros;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.spark.sql.Dataset;
 
 /**
  * Algoritmo BKT clasico. Calcula la probabilidad de dominar una habilidad dada
@@ -32,6 +33,8 @@ public class BKT {
      * Listado de items de respuestas de la habilidad
      */
     private List<Item> items;
+    
+    private Dataset<Item> elementos;
 
     public BKT() {
         this.items = new ArrayList<>();
@@ -59,6 +62,22 @@ public class BKT {
         this.pT = pT;
         this.items = items;
     }
+    
+    public BKT(Double pL0, Double pGuess, Double pSlip, Double pT, Dataset<Item> items) {
+        this.pL0 = pL0;
+        this.pGuess = pGuess;
+        this.pSlip = pSlip;
+        this.pT = pT;
+        this.elementos = items;
+    }
+    
+    public BKT(Dataset<Item> items, Parametros param){
+        this.pL0 = param.getL0();
+        this.pT = param.getT();
+        this.pGuess = param.getG();
+        this.pSlip = param.getS();
+        this.elementos = items;
+    }
 
     /**
      * Metodo para establecer el conjunto de respuestas para esa habilidad.
@@ -67,6 +86,10 @@ public class BKT {
      */
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public void setElementos(Dataset<Item> elementos) {
+        this.elementos = elementos;
     }
 
     /**
@@ -89,5 +112,18 @@ public class BKT {
             pL[i] = pLParcial + ((1 - pLParcial) * pT);
         }
         return pL[items.size()];
+    }
+    
+    public Double execute2(){
+        this.items = this.elementos.collectAsList();
+        return this.execute();
+//        int count = (int)this.elementos.count();
+//        Double[] pL = new Double[count+1];
+//        pL[0] = this.pL0;
+//        Double pLParcial;
+//        this.elementos.foreach(i->{
+//            //Aqui...
+//        });
+//        return null;
     }
 }

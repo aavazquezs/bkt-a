@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.apache.spark.ml.Transformer;
-import org.apache.spark.ml.param.Param;
 import org.apache.spark.ml.param.ParamMap;
-import org.apache.spark.ml.param.StringArrayParam;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
@@ -40,30 +38,6 @@ public class PreprocessTransformer extends Transformer implements Serializable {
         this._uid = _uid;
     }
 
-    //getters
-//    public String[] getInputCols() {
-//        return get(_inputCols).get();
-//    }
-//
-//    public String[] getOutputCols() {
-//        return get(_inputCols).get();
-//    }
-//
-//    //setters
-//    public PreprocessTransformer setInputCols(String[] columns) {
-//        _inputCols = inputCols();
-//        set(_inputCols, columns);
-//        return this;
-//    }
-//
-//    public StringArrayParam inputCols() {
-//        return new StringArrayParam(this, "inputCols", "Columns to be preprocessed togother");
-//    }
-//
-//    public PreprocessTransformer setInputCols(List<String> columns) {
-//        String[] columnsString = columns.toArray(new String[columns.size()]);
-//        return setInputCols(columnsString);
-//    }
     @Override
     public Dataset<Row> transform(Dataset<?> dataset) {
         Dataset<Row> nuevo = null;
@@ -76,7 +50,7 @@ public class PreprocessTransformer extends Transformer implements Serializable {
         if (param.containsKey("emptySymbol")) {
             tokenEmpty = param.get("emptySymbol");
         } else {
-            tokenEmpty = "";
+            tokenEmpty = "?"; //Ver como guardar el parametro
         }
         nuevo = nuevo
                 .filter(nuevo.col("First Attempt").notEqual(tokenEmpty))
@@ -84,7 +58,7 @@ public class PreprocessTransformer extends Transformer implements Serializable {
                 .filter(nuevo.col("Problem").notEqual(tokenEmpty))
                 .filter(nuevo.col("KC (Original)").notEqual(tokenEmpty));
         //convertir el dataset de row al tipo item
-        /*Encoder<Item> itemEncoder = Encoders.bean(Item.class);
+        Encoder<Item> itemEncoder = Encoders.bean(Item.class);
         Dataset<Item> items = nuevo
                 .map(row -> {
                     Item i = new Item();
@@ -93,14 +67,14 @@ public class PreprocessTransformer extends Transformer implements Serializable {
                     i.setProblem(row.getString(2));
                     i.setHabilidad(row.getString(3));
                     return i;
-                }, itemEncoder);*/
-        return nuevo;
+                }, itemEncoder);
+        Dataset<Row> result = items.select("*");
+        return result;
     }
 
     @Override
     public Transformer copy(ParamMap pm) {
         PreprocessTransformer copied = new PreprocessTransformer();
-
         return copied;
     }
 
