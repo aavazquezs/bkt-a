@@ -78,8 +78,9 @@ public class PipelineTest {
         long countBefore = dataset.count();
         System.out.println("Cantidad antes: "+countBefore);
         
-        Pipeline pipeline = new Pipeline();
-        PipelineStage[] array = new PipelineStage[1];
+//        Pipeline pipeline = new Pipeline();
+//        PipelineStage[] array = new PipelineStage[1];
+        
         Transformer pre = new PreprocessTransformer();
         Dataset<Row> ndata = pre.transform(dataset);
         ndata.printSchema();
@@ -88,7 +89,10 @@ public class PipelineTest {
         
         Estimator estimador = new FitParameterEstimator();
         Model model = estimador.fit(ndata);
-        model.transform(ndata);
+        
+        Dataset<Row> resultado = model.transform(ndata);
+        resultado.printSchema();
+        resultado.show(20);
 //        PipelineModel model = pipeline.fit(dataset);
 //        Dataset<Row> result = model.transform(dataset);
     }

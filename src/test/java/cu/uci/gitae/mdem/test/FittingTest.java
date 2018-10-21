@@ -159,7 +159,7 @@ public class FittingTest {
         assertArrayEquals(new Double[]{0.5, 0.5, 1.0, 1.0, 1.0}, k);
     }
 
-//    @Test
+    @Test
     public void empiricalProbabilitiesFitting() throws FileNotFoundException {
         System.out.println("TEST: empiricalProbabilitiesFitting");
         String habilidad = "ALT:PARALLELOGRAM-AREA";

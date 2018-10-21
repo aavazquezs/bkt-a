@@ -48,7 +48,9 @@ public class FitParameterEstimator extends Estimator<BKTModel> {
     public BKTModel fit(Dataset<?> dataset) {
         Map<String, Map<String, Parametros>> parametrosPorEstudiante = new HashMap<>();
         Dataset<Row> estudiantes = dataset.select("estudiante").distinct();
-        estudiantes.foreach(row->{
+        estudiantes
+                .collectAsList()
+                .forEach(row->{
             String estudianteActual = row.getString(0);
             Dataset<Item> dst = this.encodeDataset(dataset.select("*"));
             Dataset<Item> actuales = dst.filter(dst.col("estudiante").equalTo(estudianteActual));
@@ -65,7 +67,7 @@ public class FitParameterEstimator extends Estimator<BKTModel> {
         Dataset<Item> items = dataset
                 .map(row -> {
                     Item i = new Item();
-                    i.setCorrecto(row.getString(0).equalsIgnoreCase("1"));
+                    i.setCorrecto(row.getBoolean(0));
                     i.setEstudiante(row.getString(1));
                     i.setProblem(row.getString(2));
                     i.setHabilidad(row.getString(3));
