@@ -12,6 +12,10 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * Clase que implementa el algoritmo BKT adaptado a datos masivos.
@@ -27,12 +31,15 @@ public class BKTA implements Serializable {
     //DataLoad dataLoad;
 
     Dataset<Row> estudiantes;
+    Map<String, Map<String, Double>> estHabProb;
+    
 
     public BKTA(/*String masterConfig, String datasetPath*/) {
 //        this.masterConfig = masterConfig;
 //        this.datasetPath = datasetPath;
         this.dataset = null;
         //this.dataLoad = new DataLoadImpl();
+        estHabProb = new HashMap<>();
     }
 
     public void setDataset(Dataset<Row> dataset) {
@@ -157,7 +164,7 @@ public class BKTA implements Serializable {
     }
 
     public Map<String, Map<String, Double>> executeInParallel(Dataset<Item> items, Map<String, Map<String, Parametros>> ehp) {
-        Map<String, Map<String, Double>> resultado = new HashMap<>();
+        estHabProb = new HashMap<>();
         ehp.keySet()
                 .stream()
                 .parallel()
@@ -176,15 +183,36 @@ public class BKTA implements Serializable {
                                 Double prob = algoritmo.execute2();
                                 habilidades.put(hab, prob);
                             });
-                    resultado.put(est, habilidades);
+                    estHabProb.put(est, habilidades);
                 });
-        return resultado;
+        return estHabProb;
     }
 
     public Dataset<Row> getResults() {
         return null;
     }
 
+    public JFreeChart visualizeData(String estudiante){
+        Map<String, Double> habProb;
+        JFreeChart chart = null;
+        if(estHabProb.containsKey(estudiante)){
+            habProb = estHabProb.get(estudiante);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            habProb.entrySet().forEach((entry) -> {
+                String hab = entry.getKey();
+                Double prob = entry.getValue();
+                dataset.addValue(prob, hab, hab);
+            });
+            chart = ChartFactory
+                    .createBarChart("Latent Knowledge Estimation -"+estudiante, 
+                            "Habilities", 
+                            "Probabilities", 
+                            dataset,
+                            PlotOrientation.VERTICAL,false,true,false);
+        }
+        return chart;
+    }
+    
     /**
      * Obtener el dataset actual
      *

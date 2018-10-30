@@ -6,12 +6,19 @@ import cu.uci.gitae.mdem.bkt.dataload.DataLoad;
 import cu.uci.gitae.mdem.bkt.dataload.DataLoadImpl;
 import cu.uci.gitae.mdem.bkt.dataload.DataSourceType;
 import cu.uci.gitae.mdem.bkt.parametersFitting.Parametros;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.jfree.chart.JFreeChart;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,7 +59,7 @@ public class TestBKTA {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    @Test
+//    @Test
     public void prueba() {
         //carga de datos
         Map<String, String> param = new HashMap<>();
@@ -80,9 +87,9 @@ public class TestBKTA {
         //preprocesamiento
         //dataset = dataset.select("First Attempt","Anon Student Id","Problem","KC (Original)");
         long cant = dataset.count();
-        
+
         bkta.setDataset(dataset);
-        
+
         System.out.println("TEST: Cantidad de tuplas sin pre-procesar: " + cant);
         Dataset<Item> items = bkta.preProcessDataset(param);
         items.printSchema();
@@ -100,11 +107,26 @@ public class TestBKTA {
         });
         //Ejecutando en paralelo
         Map<String, Map<String, Double>> resultado = bkta.executeInParallel(items, ehp);
-        resultado.forEach((k,v)->{
-            System.out.println("Estudiante ID: " + k + "\n--------------------");
-            v.forEach((vk,vv)->{
-                System.out.println("[Habilidad: " + vk + ", Probabilidad: " + vv.toString() + "]");
-            });
+//        resultado.forEach((k,v)->{
+//            System.out.println("Estudiante ID: " + k + "\n--------------------");
+//            v.forEach((vk,vv)->{
+//                System.out.println("[Habilidad: " + vk + ", Probabilidad: " + vv.toString() + "]");
+//            });
+//        });
+
+        //visualize data
+        resultado.forEach((k, v) -> {
+            try {
+                JFreeChart chart = bkta.visualizeData(k);
+                String pathToFile = "./out/"+k+".png";
+                FileOutputStream output = new FileOutputStream(new File(pathToFile));
+                BufferedImage image = chart.createBufferedImage(300, 400);
+                ImageIO.write(image, "png", output);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch(IOException e){
+                e.printStackTrace();
+            }
         });
     }
 }
