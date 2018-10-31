@@ -56,7 +56,7 @@ public class DataLoadTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    @Test
+//    @Test
     public void dataLoad() {
         String pathToDataset = "./data/dataset2.tsv";
         DataLoad dataLoad = new DataLoadImpl();

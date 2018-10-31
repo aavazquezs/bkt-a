@@ -90,7 +90,6 @@ public class BKTA implements Serializable {
                 dataset = dataset.select("First Attempt", "Anon Student Id", "Problem", "KC (Original)");
             }
         }
-        //eliminar cabecera - por la forma de cargar ya viene sin cabecera
         //eliminación de tuplas con campos faltantes
         String tokenEmpty;
         if (param.containsKey("emptySymbol")) {
@@ -179,7 +178,7 @@ public class BKTA implements Serializable {
                             .forEach(hab->{
                                 Dataset<Item> itemsEstHab = itemsEstudiantes
                                         .filter(itemsEstudiantes.col("habilidad").equalTo(hab));
-                                BKT algoritmo = new BKT(items, hp.get(hab));
+                                BKT algoritmo = new BKT(itemsEstHab, hp.get(hab));
                                 Double prob = algoritmo.execute2();
                                 habilidades.put(hab, prob);
                             });

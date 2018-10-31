@@ -45,7 +45,7 @@ public class StandardBKTTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    @Test
+//    @Test
     public void loadTSV() throws FileNotFoundException {
         dataset = LoadTSV.loadTSV(pathToDataset);
         assertEquals(5105, dataset.size());
@@ -58,7 +58,7 @@ public class StandardBKTTest {
          });*/
     }
 
-    @Test
+//    @Test
     public void cargarHabilidadEspecificaPorEstudiante() throws FileNotFoundException {
         dataset = LoadTSV.loadTSV(pathToDataset);
         String estudianteId = "Stu_02ee1b3f31a6f6a7f4b8012298b2395e";
@@ -74,7 +74,7 @@ public class StandardBKTTest {
         assertEquals(16, filasDeHabilidad.size());
     }
 
-    @Test
+//    @Test
     public void convertStringArrayToItem() throws FileNotFoundException {
         dataset = LoadTSV.loadTSV(pathToDataset);
         String estudianteId = "Stu_02ee1b3f31a6f6a7f4b8012298b2395e";
@@ -95,7 +95,7 @@ public class StandardBKTTest {
         });
     }
 
-    @Test
+//    @Test
     public void habilidadesPorEstudiante() throws FileNotFoundException {
         dataset = LoadTSV.loadTSV(pathToDataset);
         String estudianteId = "Stu_02ee1b3f31a6f6a7f4b8012298b2395e";
@@ -113,7 +113,7 @@ public class StandardBKTTest {
         assertEquals(15, habilidades.size());
     }
 
-    @Test
+//    @Test
     public void estudiantesEnDataset() throws FileNotFoundException {
         dataset = LoadTSV.loadTSV(pathToDataset);
         List<String> estudiantes = dataset
@@ -126,7 +126,7 @@ public class StandardBKTTest {
         assertEquals(60+1, estudiantes.size());//comprueba que haya 60+1(dato perdido) estudiantes distintos en el dataset
         //estudiantes.forEach(System.out::println);
     }
-    @Test
+//    @Test
     public void estimarUnaHabilidadDeUnEstudiante() throws FileNotFoundException{
         dataset = LoadTSV.loadTSV(pathToDataset);
         String estudianteId = "Stu_02ee1b3f31a6f6a7f4b8012298b2395e";

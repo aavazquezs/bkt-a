@@ -60,7 +60,7 @@ public class TestHMM {
         testHMM = new HiddenMarkovModel(2, 2, A, B, pi);
     }
 
-    @Test
+//    @Test
     public void hmmEM() {
         System.out.println("Training without scaling:");
         System.out.println("-------------------------");
@@ -71,7 +71,8 @@ public class TestHMM {
         testHMM.print();
     }
 
-    @Test public void hmmScalingTest(){
+//    @Test 
+    public void hmmScalingTest(){
         System.out.println("Training with scaling:");
         System.out.println("-------------------------");
         this.init2();
@@ -80,7 +81,7 @@ public class TestHMM {
         testHMM.algorithmBaumWelchScaling(obs, 0.01, 100);
         testHMM.print();
     }
-    @Test
+//    @Test
     public void hmmEMLog() {
         System.out.println("Training with log scaling:");
         System.out.println("-------------------------");
