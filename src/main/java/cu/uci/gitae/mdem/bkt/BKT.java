@@ -117,13 +117,5 @@ public class BKT {
     public Double execute2(){
         this.items = this.elementos.collectAsList();
         return this.execute();
-//        int count = (int)this.elementos.count();
-//        Double[] pL = new Double[count+1];
-//        pL[0] = this.pL0;
-//        Double pLParcial;
-//        this.elementos.foreach(i->{
-//            //Aqui...
-//        });
-//        return null;
     }
 }
