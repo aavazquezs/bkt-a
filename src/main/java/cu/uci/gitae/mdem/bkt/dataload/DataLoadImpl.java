@@ -11,26 +11,16 @@ import org.apache.spark.sql.SparkSession;
  */
 public class DataLoadImpl implements DataLoad {
 
-//    JavaSparkContext jsc;
-//    SparkSession sparkSession;
     Dataset<Row> dataset;
 
     public DataLoadImpl() {
     }
 
-    public DataLoadImpl(String appName, String master) {
-//        SparkConf conf = new SparkConf().setAppName(appName).setMaster(master);
-//        this.sparkSession = SparkSession.builder()
-//                .config(conf)
-//                .getOrCreate();
-//        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
-    }
-
-    public DataLoadImpl(SparkSession sparkSession) {
-//        this.sparkSession = sparkSession;
-//        this.jsc = new JavaSparkContext(sparkSession.sparkContext());
-    }
-    
+//    public DataLoadImpl(String appName, String master) {
+//    }
+//
+//    public DataLoadImpl(SparkSession sparkSession) {
+//    }
 
     @Override
     public Dataset<Row> loadData(SparkSession sparkSession, DataSourceType type, Map<String, String> parametros) {
@@ -55,6 +45,11 @@ public class DataLoadImpl implements DataLoad {
             case Hive:
             case Casandra:
                 this.dataset = null; //TODO 
+                break;
+            case HDFS:
+                datasetPath = parametros.get("datasetPath");
+                //TODO
+                this.dataset = null;
                 break;
         }
         return this.dataset;

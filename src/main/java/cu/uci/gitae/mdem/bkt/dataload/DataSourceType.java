@@ -9,5 +9,6 @@ public enum DataSourceType {
     TSV,
     JSON,
     Hive,
-    Casandra
+    Casandra,
+    HDFS
 }
